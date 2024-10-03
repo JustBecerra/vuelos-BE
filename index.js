@@ -1,13 +1,16 @@
-const express = require("express")
+const { conn } = require("./src/config/dbConfig")
+const server = require("./src/config/serverConfig")
 require("dotenv").config()
-const app = express()
 
-const port = process.env.PORT
+const { PORT } = process.env
 
-app.get("/", (req, res) => {
-	res.send("Hello World!")
-})
+conn
+	.authenticate()
+	.then(() => console.log("Connection has been established successfully."))
+	.catch((err) => console.error("Unable to connect to the database:", err))
 
-app.listen(port, () => {
-	console.log(`Example app listening on port ${port}`)
+conn.sync({ force: false }).then(() => {
+	server.listen(PORT, () => {
+		console.log("listening on port", PORT)
+	})
 })
