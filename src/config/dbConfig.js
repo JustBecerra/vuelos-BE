@@ -7,6 +7,14 @@ const sequelize = new Sequelize(
 const { Airships, Connections, Clients, Flights, Users, Images } =
 	sequelize.models
 
+Users.belongsTo(Flights, {
+	foreignKey: "createdBy",
+	as: "flight",
+})
+
+Clients.belongsToMany(Flights, { through: "flight_client" })
+Flights.belongsToMany(Clients, { through: "flight_client" })
+
 module.exports = {
 	conn: sequelize,
 }
