@@ -1,11 +1,11 @@
 const express = require("express")
 const { helmetMiddleware, limiter } = require("../middleware/security")
 const { corsConfig } = require("../middleware/cors")
-
+const routes = require("../routes/index")
 const server = express()
-server.get("/", (req, res) => {
-	res.send("Hello World!")
-})
+
+server.get("/", routes)
+server.use(express.json())
 
 server.use(helmetMiddleware)
 server.use(limiter)
