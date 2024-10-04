@@ -6,7 +6,7 @@ const sequelize = new Sequelize(
 	}
 )
 
-const Users = require("../models/User")(sequelize)
+const Schedulers = require("../models/Scheduler")(sequelize)
 const Flights = require("../models/Flight")(sequelize)
 const Airships = require("../models/Airship")(sequelize)
 const Connections = require("../models/Connection")(sequelize)
@@ -14,7 +14,7 @@ const Clients = require("../models/Client")(sequelize)
 const Images = require("../models/Image")(sequelize)
 
 sequelize.models = {
-	Users,
+	Schedulers,
 	Flights,
 	Airships,
 	Connections,
@@ -22,7 +22,7 @@ sequelize.models = {
 	Images,
 }
 
-Users.hasMany(Flights, { foreignKey: "createdby", as: "flights" })
+Schedulers.hasMany(Flights, { foreignKey: "createdby", as: "flights" })
 Flights.hasMany(Connections, { foreignKey: "flight_id", as: "connections" })
 Airships.hasMany(Flights, { foreignKey: "airship_id", as: "flights" })
 Airships.hasMany(Images, { foreignKey: "airship_id", as: "images" })
