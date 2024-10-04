@@ -1,12 +1,13 @@
 const { DataTypes } = require("sequelize")
 
 module.exports = (sequelize) => {
-	const Users = sequelize.define(
-		"user",
+	const Schedulers = sequelize.define(
+		"scheduler",
 		{
 			id: {
 				type: DataTypes.INTEGER,
 				primaryKey: true,
+				autoIncrement: true,
 			},
 			username: {
 				type: DataTypes.STRING(255),
@@ -19,9 +20,9 @@ module.exports = (sequelize) => {
 			},
 		},
 		{
-			tableName: "user",
+			tableName: "scheduler",
 			timestamps: false,
 		}
 	)
-	return Users
+	return Schedulers
 }
