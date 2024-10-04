@@ -7,6 +7,7 @@ module.exports = (sequelize) => {
 			id: {
 				type: DataTypes.INTEGER,
 				primaryKey: true,
+				autoIncrement: true,
 			},
 			image_url: {
 				type: DataTypes.TEXT,
