@@ -4,8 +4,9 @@ const { corsConfig } = require("../middleware/cors")
 const routes = require("../routes/index")
 const server = express()
 
-server.get("/", routes)
 server.use(express.json())
+server.use("/", routes)
+
 
 server.use(helmetMiddleware)
 server.use(limiter)

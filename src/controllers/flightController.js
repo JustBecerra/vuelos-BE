@@ -1,4 +1,4 @@
-const { Op } = require("sequelize")
+const flightService = require("../services/flightService")
 
 const postFlight = async (req, res) => {
 	try {

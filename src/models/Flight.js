@@ -7,6 +7,7 @@ module.exports = (sequelize) => {
 			id: {
 				type: DataTypes.INTEGER,
 				primaryKey: true,
+				autoIncrement: true,
 			},
 			launchtime: {
 				type: DataTypes.DATE,
@@ -22,6 +23,17 @@ module.exports = (sequelize) => {
 			},
 			airship_id: {
 				type: DataTypes.INTEGER,
+				references: {
+					model: "airship",
+					key: "id",
+				},
+			},
+			createdby: {
+				type: DataTypes.INTEGER,
+				references: {
+					model: "user",
+					key: "id",
+				},
 			},
 		},
 		{
@@ -29,5 +41,6 @@ module.exports = (sequelize) => {
 			timestamps: true,
 		}
 	)
+
 	return Flights
 }
