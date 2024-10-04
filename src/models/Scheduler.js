@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize")
 
 module.exports = (sequelize) => {
-	const Scheduler = sequelize.define(
+	const Schedulers = sequelize.define(
 		"scheduler",
 		{
 			id: {
@@ -23,5 +23,5 @@ module.exports = (sequelize) => {
 			timestamps: false,
 		}
 	)
-	return Scheduler
+	return Schedulers
 }
