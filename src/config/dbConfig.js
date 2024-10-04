@@ -22,7 +22,7 @@ sequelize.models = {
 	Images,
 }
 
-Users.hasMany(Flights, { foreignKey: "createdBy", as: "flights" })
+Users.hasMany(Flights, { foreignKey: "createdby", as: "flights" })
 Flights.hasMany(Connections, { foreignKey: "flight_id", as: "connections" })
 Airships.hasMany(Flights, { foreignKey: "airship_id", as: "flights" })
 Airships.hasMany(Images, { foreignKey: "airship_id", as: "images" })
