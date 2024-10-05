@@ -1,7 +1,18 @@
-const DataTypes = require("sequelize")
+import { DataTypes, Model, Sequelize } from "sequelize"
 
-module.exports = (sequelize) => {
-	const Flights = sequelize.define(
+// Define the attributes of the Flight model
+export interface FlightAttributes {
+	id: number
+	launchtime: Date
+	arrivaltime: Date
+	to: string
+	from: string
+	airship_id: number
+	createdby: number
+}
+
+const Flights = (sequelize: Sequelize) => {
+	const Flights = sequelize.define<Model<FlightAttributes>>(
 		"flight",
 		{
 			id: {
@@ -11,15 +22,19 @@ module.exports = (sequelize) => {
 			},
 			launchtime: {
 				type: DataTypes.DATE,
+				allowNull: false,
 			},
 			arrivaltime: {
 				type: DataTypes.DATE,
+				allowNull: false,
 			},
 			to: {
 				type: DataTypes.STRING(50),
+				allowNull: false,
 			},
 			from: {
 				type: DataTypes.STRING(50),
+				allowNull: false,
 			},
 			airship_id: {
 				type: DataTypes.INTEGER,
@@ -27,6 +42,7 @@ module.exports = (sequelize) => {
 					model: "airship",
 					key: "id",
 				},
+				allowNull: false,
 			},
 			createdby: {
 				type: DataTypes.INTEGER,
@@ -34,6 +50,7 @@ module.exports = (sequelize) => {
 					model: "scheduler",
 					key: "id",
 				},
+				allowNull: false,
 			},
 		},
 		{
@@ -44,3 +61,5 @@ module.exports = (sequelize) => {
 
 	return Flights
 }
+
+export default Flights

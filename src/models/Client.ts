@@ -1,7 +1,16 @@
-const DataTypes = require("sequelize")
+import { DataTypes, Model, Sequelize } from "sequelize"
 
-module.exports = (sequelize) => {
-	const Clients = sequelize.define(
+export interface ConnectionAttributes {
+	id: number
+	firstname: string
+	lastname: string
+	email: string
+	phonenumber: string
+	identification: string
+}
+
+const Client = (sequelize: Sequelize) => {
+	const Clients = sequelize.define<Model<ConnectionAttributes>>(
 		"client",
 		{
 			id: {
@@ -32,3 +41,5 @@ module.exports = (sequelize) => {
 	)
 	return Clients
 }
+
+export default Client

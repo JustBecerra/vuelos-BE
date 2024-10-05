@@ -1,7 +1,14 @@
-const { DataTypes } = require("sequelize")
+import { DataTypes, Model, Sequelize } from "sequelize"
 
-module.exports = (sequelize) => {
-	const Schedulers = sequelize.define(
+export interface SchedulerAttributes {
+	id: number
+	username: string
+	password: string
+	role: string
+}
+
+const Scheduler = (sequelize: Sequelize) => {
+	const Schedulers = sequelize.define<Model<SchedulerAttributes>>(
 		"scheduler",
 		{
 			id: {
@@ -26,3 +33,5 @@ module.exports = (sequelize) => {
 	)
 	return Schedulers
 }
+
+export default Scheduler

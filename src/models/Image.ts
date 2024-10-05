@@ -1,7 +1,13 @@
-const DataTypes = require("sequelize")
+import { DataTypes, Model, Sequelize } from "sequelize"
 
-module.exports = (sequelize) => {
-	const Images = sequelize.define(
+export interface ImageAttributes {
+	id: number
+	image_url: string
+	airship_id: number
+}
+
+const image = (sequelize: Sequelize) => {
+	const Images = sequelize.define<Model<ImageAttributes>>(
 		"image",
 		{
 			id: {
@@ -23,3 +29,5 @@ module.exports = (sequelize) => {
 	)
 	return Images
 }
+
+export default image
