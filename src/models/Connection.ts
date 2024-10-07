@@ -1,7 +1,16 @@
-const DataTypes = require("sequelize")
+import { DataTypes, Model, Sequelize } from "sequelize"
 
-module.exports = (sequelize) => {
-	const Connections = sequelize.define(
+export interface ConnectionAttributes {
+	id: number
+	launchtime: Date
+	arrivaltime: Date
+	to: string
+	from: string
+	flight_id: number
+}
+
+const connection = (sequelize: Sequelize) => {
+	const Connections = sequelize.define<Model<ConnectionAttributes>>(
 		"connection",
 		{
 			id: {
@@ -32,3 +41,5 @@ module.exports = (sequelize) => {
 	)
 	return Connections
 }
+
+export default connection

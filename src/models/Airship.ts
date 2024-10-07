@@ -1,7 +1,15 @@
-const { DataTypes } = require("sequelize")
+import { DataTypes, Model, Sequelize } from "sequelize"
 
-module.exports = (sequelize) => {
-	const Airships = sequelize.define(
+export interface AirshipAttributes {
+	id: number
+	title: string
+	status: string
+	pricepermiles: number
+	seats: number
+}
+
+const Airship = (sequelize: Sequelize) => {
+	const Airships = sequelize.define<Model<AirshipAttributes>>(
 		"airship",
 		{
 			id: {
@@ -29,3 +37,5 @@ module.exports = (sequelize) => {
 	)
 	return Airships
 }
+
+export default Airship
