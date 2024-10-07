@@ -1,5 +1,9 @@
 import { Request, Response } from "express"
-import { postFlightService, getFlightsService } from "../services/flightService"
+import {
+	postFlightService,
+	getFlightsService,
+	getFlightByIdService,
+} from "../services/flightService"
 
 const postFlight = async (req: Request, res: Response): Promise<void> => {
 	try {
@@ -35,4 +39,22 @@ const getFlights = async (req: Request, res: Response): Promise<void> => {
 	}
 }
 
-export { postFlight, getFlights }
+const getFlightById = async (req: Request, res: Response): Promise<void> => {
+	try {
+		const flightID = parseInt(req.params.id)
+		const flight = await getFlightByIdService(flightID)
+		res.status(200).json(flight)
+	} catch (error) {
+		console.error("error getting flight by id", error)
+		res.status(500).json({
+			message: "Error getting flight by id",
+			error: {
+				name: (error as Error).name,
+				message: (error as Error).message,
+				stack: (error as Error).stack,
+			},
+		})
+	}
+}
+
+export { postFlight, getFlights, getFlightById }

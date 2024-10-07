@@ -57,4 +57,17 @@ const getFlightsService = async () => {
 	}
 }
 
-export { postFlightService, getFlightsService }
+const getFlightByIdService = async (id: number) => {
+	try {
+		const flightById = await Flights.findByPk(id)
+
+		if (!flightById) throw new Error("There is no flight with that ID")
+
+		return flightById
+	} catch (err) {
+		console.error(err)
+		return null
+	}
+}
+
+export { postFlightService, getFlightsService, getFlightByIdService }
