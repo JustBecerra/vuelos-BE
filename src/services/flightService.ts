@@ -1,7 +1,5 @@
-import db from "../config/dbConfig" // Default import
-
-import { FlightAttributes } from "../models/Flight"
-const { Flights } = db // Destructure the Flights model
+import db from "../config/dbConfig"
+const { Flights, Schedulers, Airships } = db
 interface FlightInput {
 	id: number
 	launchtime: Date
@@ -16,6 +14,16 @@ const postFlightService = async (flight: FlightInput) => {
 	try {
 		const { id, launchtime, arrivaltime, to, from, airship_id, createdby } =
 			flight
+
+		const schedulerID = await Schedulers.findByPk(createdby)
+		const airshipID = await Airships.findByPk(airship_id)
+
+		if (!schedulerID) throw new Error("Scheduler does not exist")
+
+		if (schedulerID?.dataValues.role !== "admin")
+			throw new Error("Scheduler is not an admin.")
+
+		if (!airshipID) throw new Error("Airship does not exist.")
 
 		const newFlight = await Flights.create({
 			id,
