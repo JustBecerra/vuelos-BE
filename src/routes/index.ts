@@ -1,10 +1,15 @@
 import express, { Router } from "express"
-import { postFlight, getFlights } from "../controllers/flightController"
+import {
+	postFlight,
+	getFlights,
+	getFlightById,
+} from "../controllers/flightController"
 
 const router: Router = express.Router()
 
 //flights
-router.post("/flights", postFlight)
+router.post("/flight", postFlight)
 router.get("/flights", getFlights)
+router.get("/flight/:id", getFlightById)
 
 export default router
