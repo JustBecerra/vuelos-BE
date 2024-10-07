@@ -8,12 +8,10 @@ const server = express()
 server.use(express.json())
 server.use("/", routes)
 
-// Middleware for security and CORS
 server.use(helmetMiddleware)
 server.use(limiter)
 server.use(corsConfig)
 
-// Error handling middleware
 server.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 	console.error(err.stack)
 	res.status(500).send("Something broke!")

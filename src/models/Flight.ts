@@ -1,6 +1,4 @@
 import { DataTypes, Model, Sequelize } from "sequelize"
-
-// Define the attributes of the Flight model
 export interface FlightAttributes {
 	id: number
 	launchtime: Date
