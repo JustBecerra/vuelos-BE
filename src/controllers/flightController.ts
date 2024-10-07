@@ -3,6 +3,7 @@ import {
 	postFlightService,
 	getFlightsService,
 	getFlightByIdService,
+	getFlightByClientIdService,
 } from "../services/flightService"
 
 const postFlight = async (req: Request, res: Response): Promise<void> => {
@@ -57,4 +58,29 @@ const getFlightById = async (req: Request, res: Response): Promise<void> => {
 	}
 }
 
-export { postFlight, getFlights, getFlightById }
+const getFlightByClientId = async (
+	req: Request,
+	res: Response
+): Promise<void> => {
+	try {
+		const clientID = parseInt(req.params.id)
+		const flights = await getFlightByClientIdService(clientID)
+
+		if (!flights || flights.length === 0) {
+			res.status(404).json({ message: "No flights found for this client" })
+		}
+		res.status(200).json(flights)
+	} catch (error) {
+		console.error("error getting flights by client id", error)
+		res.status(500).json({
+			message: "Error getting flights by client id",
+			error: {
+				name: (error as Error).name,
+				message: (error as Error).message,
+				stack: (error as Error).stack,
+			},
+		})
+	}
+}
+
+export { postFlight, getFlights, getFlightById, getFlightByClientId }

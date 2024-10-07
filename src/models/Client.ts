@@ -1,6 +1,6 @@
 import { DataTypes, Model, Sequelize } from "sequelize"
 
-export interface ConnectionAttributes {
+export interface ClientAttributes {
 	id: number
 	firstname: string
 	lastname: string
@@ -10,7 +10,7 @@ export interface ConnectionAttributes {
 }
 
 const Client = (sequelize: Sequelize) => {
-	const Clients = sequelize.define<Model<ConnectionAttributes>>(
+	const Clients = sequelize.define<Model<ClientAttributes>>(
 		"client",
 		{
 			id: {

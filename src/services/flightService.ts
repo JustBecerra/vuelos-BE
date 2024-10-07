@@ -1,5 +1,5 @@
 import db from "../config/dbConfig"
-const { Flights, Schedulers, Airships } = db
+const { Flights, Schedulers, Airships, Clients } = db
 interface FlightInput {
 	id: number
 	launchtime: Date
@@ -70,4 +70,28 @@ const getFlightByIdService = async (id: number) => {
 	}
 }
 
-export { postFlightService, getFlightsService, getFlightByIdService }
+const getFlightByClientIdService = async (clientID: number) => {
+	try {
+		const flights = await Flights.findAll({
+			include: [
+				{
+					model: Clients,
+					where: { id: clientID },
+					attributes: [],
+				},
+			],
+		})
+
+		return flights
+	} catch (err) {
+		console.error(err)
+		return null
+	}
+}
+
+export {
+	postFlightService,
+	getFlightsService,
+	getFlightByIdService,
+	getFlightByClientIdService,
+}
