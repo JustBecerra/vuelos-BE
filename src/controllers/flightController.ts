@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import { postFlightService } from "../services/flightService"
+import { postFlightService, getFlightsService } from "../services/flightService"
 
 const postFlight = async (req: Request, res: Response): Promise<void> => {
 	try {
@@ -18,4 +18,21 @@ const postFlight = async (req: Request, res: Response): Promise<void> => {
 	}
 }
 
-export { postFlight }
+const getFlights = async (req: Request, res: Response): Promise<void> => {
+	try {
+		const flights = await getFlightsService()
+		res.status(200).json(flights)
+	} catch (error) {
+		console.error("error getting flights", error)
+		res.status(500).json({
+			message: "Error getting flights",
+			error: {
+				name: (error as Error).name,
+				message: (error as Error).message,
+				stack: (error as Error).stack,
+			},
+		})
+	}
+}
+
+export { postFlight, getFlights }

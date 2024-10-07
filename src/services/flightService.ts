@@ -44,4 +44,17 @@ const postFlightService = async (flight: FlightInput) => {
 	}
 }
 
-export { postFlightService }
+const getFlightsService = async () => {
+	try {
+		const flights = await Flights.findAll()
+
+		if (!flights) throw new Error("There are no flights scheduled")
+
+		return flights
+	} catch (err) {
+		console.error(err)
+		return null
+	}
+}
+
+export { postFlightService, getFlightsService }
