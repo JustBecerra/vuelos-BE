@@ -1,6 +1,6 @@
 import db from "../config/dbConfig"
 import { Op } from "sequelize"
-const { Flights, Schedulers, Airships, Clients, ClientFlights } = db
+const { Flights, Schedulers, Airships, ClientFlights } = db
 interface FlightInput {
 	id: number
 	launchtime: Date
