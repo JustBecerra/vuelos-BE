@@ -26,15 +26,16 @@ Schedulers.hasMany(Flights, { foreignKey: "createdby", as: "flights" })
 Flights.hasMany(Connections, { foreignKey: "flight_id", as: "connections" })
 Airships.hasMany(Flights, { foreignKey: "airship_id", as: "flights" })
 Airships.hasMany(Images, { foreignKey: "airship_id", as: "images" })
-Clients.belongsToMany(ClientFlights, {
-	through: "flight_client",
+Clients.belongsToMany(Flights, {
+	through: ClientFlights,
 	foreignKey: "clientId",
 	as: "flights",
 })
-Flights.belongsToMany(ClientFlights, {
-	through: "flight_client",
+
+Flights.belongsToMany(Clients, {
+	through: ClientFlights,
 	foreignKey: "flightId",
-	as: "client",
+	as: "clients",
 })
 
 sequelize.sync()

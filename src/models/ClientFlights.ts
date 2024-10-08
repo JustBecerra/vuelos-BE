@@ -25,6 +25,10 @@ const ClientFlight = (sequelize: Sequelize) => {
 				},
 				allowNull: false,
 			},
+		},
+		{
+			tableName: "ClientFlights",
+			timestamps: false,
 		}
 	)
 	return ClientFlights
