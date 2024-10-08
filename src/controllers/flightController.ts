@@ -66,7 +66,7 @@ const getFlightByClientId = async (
 		const clientID = parseInt(req.params.id)
 		const flights = await getFlightByClientIdService(clientID)
 
-		if (!flights || flights.length === 0) {
+		if (!flights) {
 			res.status(404).json({ message: "No flights found for this client" })
 		}
 		res.status(200).json(flights)
