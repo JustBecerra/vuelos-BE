@@ -66,8 +66,8 @@ const getFlightByClientId = async (
 		const clientID = parseInt(req.params.id)
 		const flights = await getFlightByClientIdService(clientID)
 
-		if (!flights) {
-			res.status(404).json({ message: "No flights found for this client" })
+		if (Array.isArray(flights) && flights.length === 0) {
+			res.status(404).json({ message: "No flights found for this client" }) // capaz tenemos que borrar el mensaje con .json
 		}
 		res.status(200).json(flights)
 	} catch (error) {

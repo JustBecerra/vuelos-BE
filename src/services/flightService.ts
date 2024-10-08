@@ -79,6 +79,8 @@ const getFlightByClientIdService = async (clientID: number) => {
 			},
 		})
 
+		if (!clientsFlights) return []
+
 		const flightIDs = clientsFlights.map((flight) => flight.dataValues.flightId)
 
 		const flights = await Flights.findAll({
@@ -88,6 +90,8 @@ const getFlightByClientIdService = async (clientID: number) => {
 				},
 			},
 		})
+
+		if (!flights.length) return []
 		return flights
 	} catch (err) {
 		console.error(err)
