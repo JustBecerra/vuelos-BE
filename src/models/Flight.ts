@@ -1,4 +1,5 @@
-import { DataTypes, Model, Sequelize } from "sequelize"
+import { DataTypes, Model, Optional, Sequelize } from "sequelize"
+import { ClientAttributes } from "./Client"
 export interface FlightAttributes {
 	id: number
 	launchtime: Date
@@ -9,8 +10,27 @@ export interface FlightAttributes {
 	createdby: number
 }
 
+export interface FlightCreationAttributes
+	extends Optional<FlightAttributes, "id"> {}
+
+export interface FlightInstance
+	extends Model<FlightAttributes, FlightCreationAttributes> {
+	id: number
+	launchtime: Date
+	arrivaltime: Date
+	to: string
+	from: string
+	airship_id: number
+	createdby: number
+
+	// metodos para asociación de tablas conjuntas
+	addClient: (client: ClientAttributes) => Promise<void>
+	getClients: () => Promise<ClientAttributes[]>
+	setClients: (clients: ClientAttributes[]) => Promise<void>
+}
+
 const Flights = (sequelize: Sequelize) => {
-	const Flights = sequelize.define<Model<FlightAttributes>>(
+	const Flights = sequelize.define<FlightInstance>(
 		"flight",
 		{
 			id: {
