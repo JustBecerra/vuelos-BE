@@ -17,7 +17,8 @@ const associateFlightWithClient = async (
 	try {
 		const client = await Clients.findByPk(clientId)
 		const flight = await Flights.findByPk(flightId)
-
+		console.log({ client })
+		console.log({ flight })
 		if (client && flight) {
 			await client.addFlight(flight)
 			return { message: "Flight successfully associated with client" }
