@@ -1,5 +1,6 @@
 import db from "../config/dbConfig"
-const { Flights, Schedulers, Airships, Clients } = db
+import { Op } from "sequelize"
+const { Flights, Schedulers, Airships, Clients, ClientFlights } = db
 interface FlightInput {
 	id: number
 	launchtime: Date
@@ -72,20 +73,29 @@ const getFlightByIdService = async (id: number) => {
 
 const getFlightByClientIdService = async (clientID: number) => {
 	try {
-		const flights = await Flights.findAll({
-			include: [
-				{
-					model: Clients,
-					where: { id: clientID },
-					attributes: [],
-				},
-			],
+		const clientsFlights = await ClientFlights.findAll({
+			where: {
+				clientId: clientID,
+			},
 		})
 
+		if (!clientsFlights) return []
+
+		const flightIDs = clientsFlights.map((flight) => flight.dataValues.flightId)
+
+		const flights = await Flights.findAll({
+			where: {
+				id: {
+					[Op.in]: flightIDs,
+				},
+			},
+		})
+
+		if (!flights.length) return []
 		return flights
 	} catch (err) {
 		console.error(err)
-		return null
+		return err
 	}
 }
 

@@ -5,7 +5,7 @@ import {
 	getFlightById,
 	getFlightByClientId,
 } from "../controllers/flightController"
-import { postClientFlight } from "../controllers/clientController"
+import { postClientFlight, postClient } from "../controllers/clientController"
 
 const router: Router = express.Router()
 
@@ -17,5 +17,6 @@ router.get("/clientflight/:id", getFlightByClientId)
 
 //clients
 router.post("/clients/:clientId/flights/:flightId", postClientFlight)
+router.post("/client", postClient)
 
 export default router

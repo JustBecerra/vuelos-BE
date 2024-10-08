@@ -46,6 +46,7 @@ export default {
 	Airships,
 	Connections,
 	Clients,
+	ClientFlights,
 	Images,
 	conn: sequelize,
 }

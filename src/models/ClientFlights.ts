@@ -28,7 +28,7 @@ const ClientFlight = (sequelize: Sequelize) => {
 		},
 		{
 			tableName: "ClientFlights",
-			timestamps: false,
+			timestamps: true,
 		}
 	)
 	return ClientFlights
