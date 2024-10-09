@@ -1,5 +1,8 @@
 import { Request, Response } from "express"
-import { RegisterSchedulerService } from "../services/schedulerService"
+import {
+	RegisterSchedulerService,
+	LoginSchedulerService,
+} from "../services/schedulerService"
 
 const getScheduler = async (req: Request, res: Response) => {}
 
@@ -11,4 +14,20 @@ const registerScheduler = async (req: Request, res: Response) => {
 		console.error("error creating new scheduler", err)
 	}
 }
-export { getScheduler, registerScheduler }
+
+const loginScheduler = async (req: Request, res: Response) => {
+	try {
+		const LogUser = await LoginSchedulerService(req.body)
+
+		if (LogUser === "invalid password or email")
+			res.status(401).json({ message: LogUser })
+		res.status(200).json({
+			success: true,
+			LogUser,
+			message: "Logged in successfully!",
+		})
+	} catch (err) {
+		console.error("Error logging scheduler", err)
+	}
+}
+export { getScheduler, registerScheduler, loginScheduler }

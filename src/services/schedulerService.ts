@@ -1,15 +1,10 @@
 import db from "../config/dbConfig"
 import bcrypt from "bcryptjs"
+import { generateToken } from "../middleware/generateToken"
+import { SchedulerAttributes } from "../models/Scheduler"
 const { Schedulers } = db
 
-interface SchedulerInput {
-	id: number
-	username: string
-	password: string
-	role: string
-}
-
-const RegisterSchedulerService = async (scheduler: SchedulerInput) => {
+const RegisterSchedulerService = async (scheduler: SchedulerAttributes) => {
 	const { id, username, password, role } = scheduler
 	try {
 		const existingScheduler = await Schedulers.findOne({
@@ -35,4 +30,29 @@ const RegisterSchedulerService = async (scheduler: SchedulerInput) => {
 	}
 }
 
-export { RegisterSchedulerService }
+const LoginSchedulerService = async (scheduler: SchedulerAttributes) => {
+	const { username, password } = scheduler
+	try {
+		const scheduler = await Schedulers.findOne({
+			where: {
+				username,
+				password,
+			},
+		})
+
+		if (!scheduler) {
+			return "invalid password or email"
+		}
+
+		const token = generateToken({
+			id: scheduler.get("id") as number,
+			username: scheduler.get("username") as string,
+		})
+
+		return token
+	} catch (err) {
+		console.error(err)
+	}
+}
+
+export { RegisterSchedulerService, LoginSchedulerService }

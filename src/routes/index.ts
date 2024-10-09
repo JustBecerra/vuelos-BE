@@ -9,6 +9,7 @@ import { postClientFlight, postClient } from "../controllers/clientController"
 import {
 	getScheduler,
 	registerScheduler,
+	loginScheduler,
 } from "../controllers/schedulerController"
 
 const router: Router = express.Router()
@@ -25,5 +26,6 @@ router.post("/client", postClient)
 
 //users
 router.get("/scheduler", getScheduler)
+router.post("/scheduler/login", loginScheduler)
 router.post("/scheduler/register", registerScheduler)
 export default router
