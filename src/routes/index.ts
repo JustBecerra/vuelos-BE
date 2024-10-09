@@ -6,7 +6,10 @@ import {
 	getFlightByClientId,
 } from "../controllers/flightController"
 import { postClientFlight, postClient } from "../controllers/clientController"
-import { getScheduler } from "../controllers/schedulerController"
+import {
+	getScheduler,
+	registerScheduler,
+} from "../controllers/schedulerController"
 
 const router: Router = express.Router()
 
@@ -22,4 +25,5 @@ router.post("/client", postClient)
 
 //users
 router.get("/scheduler", getScheduler)
+router.post("/scheduler/register", registerScheduler)
 export default router
