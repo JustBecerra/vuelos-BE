@@ -6,6 +6,12 @@ import {
 	getFlightByClientId,
 } from "../controllers/flightController"
 import { postClientFlight, postClient } from "../controllers/clientController"
+import {
+	getScheduler,
+	registerScheduler,
+	loginScheduler,
+} from "../controllers/schedulerController"
+import { ProtectRoute } from "../middleware/authMiddleware"
 
 const router: Router = express.Router()
 
@@ -19,4 +25,8 @@ router.get("/clientflight/:id", getFlightByClientId)
 router.post("/clients/:clientId/flights/:flightId", postClientFlight)
 router.post("/client", postClient)
 
+//users
+router.get("/scheduler", ProtectRoute, getScheduler)
+router.post("/scheduler/login", loginScheduler)
+router.post("/scheduler/register", registerScheduler)
 export default router
