@@ -36,12 +36,18 @@ const LoginSchedulerService = async (scheduler: SchedulerAttributes) => {
 		const scheduler = await Schedulers.findOne({
 			where: {
 				username,
-				password,
 			},
 		})
 
 		if (!scheduler) {
-			return "invalid password or email"
+			return "invalid email"
+		}
+		const dehashedPassword = scheduler?.dataValues.password
+
+		const validPassword = await bcrypt.compare(password, dehashedPassword)
+
+		if (!validPassword) {
+			return "invalid password"
 		}
 
 		const token = generateToken({

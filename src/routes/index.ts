@@ -11,6 +11,7 @@ import {
 	registerScheduler,
 	loginScheduler,
 } from "../controllers/schedulerController"
+import { ProtectRoute } from "../middleware/authMiddleware"
 
 const router: Router = express.Router()
 
@@ -25,7 +26,7 @@ router.post("/clients/:clientId/flights/:flightId", postClientFlight)
 router.post("/client", postClient)
 
 //users
-router.get("/scheduler", getScheduler)
+router.get("/scheduler", ProtectRoute, getScheduler)
 router.post("/scheduler/login", loginScheduler)
 router.post("/scheduler/register", registerScheduler)
 export default router
