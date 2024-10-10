@@ -4,13 +4,13 @@ import { corsConfig } from "../middleware/cors"
 import routes from "../routes/index"
 
 const server = express()
-
+server.use(corsConfig)
 server.use(express.json())
 server.use("/", routes)
 
 server.use(helmetMiddleware)
 server.use(limiter)
-server.use(corsConfig)
+
 
 server.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 	console.error(err.stack)
