@@ -6,9 +6,10 @@ import ConnectionsModel from "../models/Connection"
 import ClientsModel from "../models/Client"
 import ImagesModel from "../models/Image"
 import ClientFlightsModel from "../models/ClientFlights"
+require("dotenv").config()
 
 const sequelize = new Sequelize(
-	"postgres://postgres:54321@localhost:5432/vuelosDB",
+	`postgres://postgres:${process.env.PASSWORD}@localhost:5432/${process.env.NAME}`,
 	{
 		logging: false,
 	}
