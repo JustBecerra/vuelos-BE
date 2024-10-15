@@ -5,7 +5,7 @@ import {
 	getFlightById,
 	getFlightByClientId,
 } from "../controllers/flightController"
-import { postClientFlight, postClient } from "../controllers/clientController"
+import { postClientFlight, postClient, getClientById, getClient } from "../controllers/clientController"
 import {
 	getScheduler,
 	registerScheduler,
@@ -24,6 +24,8 @@ router.get("/clientflight/:id", getFlightByClientId)
 //clients
 router.post("/clients/:clientId/flights/:flightId", postClientFlight)
 router.post("/client", postClient)
+router.get("/client/:clientId", getClientById)
+router.get("/clients", getClient)
 
 //users
 router.get("/scheduler", ProtectRoute, getScheduler)
