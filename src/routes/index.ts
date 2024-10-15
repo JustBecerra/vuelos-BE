@@ -11,7 +11,7 @@ import {
 	registerScheduler,
 	loginScheduler,
 } from "../controllers/schedulerController"
-import { getAirships } from "../controllers/airshipController"
+import { getAirships, postAirship } from "../controllers/airshipController"
 import { ProtectRoute } from "../middleware/authMiddleware"
 
 const router: Router = express.Router()
@@ -35,4 +35,5 @@ router.post("/scheduler/register", registerScheduler)
 
 //airships
 router.get("/airships", getAirships)
+router.post("/airship", postAirship)
 export default router
