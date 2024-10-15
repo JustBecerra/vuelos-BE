@@ -48,4 +48,31 @@ const postClientService = async (client: ClientInterface) => {
 	}
 }
 
-export { associateFlightWithClient, postClientService }
+const getClientByIdService = async (clientId: number) => {
+    try {
+        const client = await Clients.findByPk(clientId)
+        if (!client) {
+            throw new Error("Client not found")
+        }
+        return client
+    } catch (error) {
+        console.error("Error fetching client:", error)
+        throw error
+    }
+}
+
+const getClientService = async () => {
+	try {
+		const client = await Flights.findAll()
+
+		if (!client) throw new Error("There are no clients scheduled")
+
+		return client
+	} catch (err) {
+		console.error(err)
+		return null
+	}
+}
+
+
+export { associateFlightWithClient, postClientService, getClientByIdService, getClientService }
