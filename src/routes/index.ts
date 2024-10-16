@@ -15,6 +15,7 @@ import {
 	getAirships,
 	postAirship,
 	putAirship,
+	deleteAirship,
 } from "../controllers/airshipController"
 import { ProtectRoute } from "../middleware/authMiddleware"
 
@@ -41,4 +42,5 @@ router.post("/scheduler/register", registerScheduler)
 router.get("/airships", getAirships)
 router.post("/airship", postAirship)
 router.put("/airship", putAirship)
+router.delete("/airship/:id", deleteAirship)
 export default router

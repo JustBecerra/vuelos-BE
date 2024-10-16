@@ -73,4 +73,24 @@ const putAirshipService = async (airship: airshipProps) => {
 	}
 }
 
-export { getAirshipsService, postAirshipService, putAirshipService }
+const deleteAirshipService = async (airshipID: number) => {
+	try {
+		const deleteAirship = await Airships.destroy({
+			where: {
+				id: airshipID,
+			},
+		})
+
+		return deleteAirship
+	} catch (err) {
+		console.error(err)
+		throw new Error("airship modification wasnt possible")
+	}
+}
+
+export {
+	getAirshipsService,
+	postAirshipService,
+	putAirshipService,
+	deleteAirshipService,
+}

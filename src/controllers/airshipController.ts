@@ -3,6 +3,7 @@ import {
 	getAirshipsService,
 	postAirshipService,
 	putAirshipService,
+	deleteAirshipService,
 } from "../services/airshipService"
 
 const getAirships = async (req: Request, res: Response) => {
@@ -64,4 +65,25 @@ const putAirship = async (req: Request, res: Response) => {
 	}
 }
 
-export { getAirships, postAirship, putAirship }
+const deleteAirship = async (req: Request, res: Response) => {
+	try {
+		const airship = await deleteAirshipService(parseInt(req.params.id))
+
+		if (airship === 0) {
+			res.status(400).json({ message: "Airship deletion failed" })
+		} else {
+			res.status(200).json({ message: "Airship updated successfully" })
+		}
+	} catch (error) {
+		res.status(500).json({
+			message: "Error deleting airship",
+			error: {
+				name: (error as Error).name,
+				message: (error as Error).message,
+				stack: (error as Error).stack,
+			},
+		})
+	}
+}
+
+export { getAirships, postAirship, putAirship, deleteAirship }
