@@ -74,5 +74,58 @@ const getClientService = async () => {
 	}
 }
 
+const putClientService = async (client: ClientInterface) => {
+	const { id, firstname, lastname, email, phonenumber, identification } =
+		client
+	try {
+		const oldClient = await Clients.findByPk(id)
 
-export { associateFlightWithClient, postClientService, getClientByIdService, getClientService }
+		if (oldClient) {
+			const clientToModify = await Clients.update(
+				{
+					firstname,
+					lastname,
+					email,
+					phonenumber,
+					identification,
+				},
+				{
+					where: {
+						id,
+					},
+				}
+			)
+			if (clientToModify[0] < 1) return 0
+			return clientToModify
+		} else {
+			return 0
+		}
+	} catch (err) {
+		console.error(err)
+		return null
+	}
+}
+
+const deleteClientService = async (clientId: number) => {
+	try {
+		const deleteAirship = await Clients.destroy({
+			where: {
+				id: clientId,
+			},
+		})
+
+		return deleteAirship
+	} catch (err) {
+		console.error(err)
+		throw new Error("client deletion wasnt possible")
+	}
+}
+
+export {
+	associateFlightWithClient,
+	postClientService,
+	getClientByIdService,
+	getClientService,
+	putClientService,
+	deleteClientService,
+}
