@@ -5,6 +5,7 @@ import {
 	getClientByIdService,
 	getClientService,
 	putClientService,
+	deleteClientService,
 } from "../services/clientService"
 
 const postClientFlight = async (req: Request, res: Response) => {
@@ -84,4 +85,33 @@ const putClient = async (req: Request, res: Response) => {
 	}
 }
 
-export { postClientFlight, postClient, getClientById, getClient, putClient } 
+const deleteClient = async (req: Request, res: Response) => {
+	try {
+		const client = await deleteClientService(parseInt(req.params.id))
+
+		if (client === 0) {
+			res.status(400).json({ message: "Client deletion failed" })
+		} else {
+			res.status(200).json({ message: "Client updated successfully" })
+		}
+	} catch (error) {
+		console.error("error editing client", error)
+		res.status(500).json({
+			message: "Error editing client",
+			error: {
+				name: (error as Error).name,
+				message: (error as Error).message,
+				stack: (error as Error).stack,
+			},
+		})
+	}
+}
+
+export {
+	postClientFlight,
+	postClient,
+	getClientById,
+	getClient,
+	putClient,
+	deleteClient,
+} 

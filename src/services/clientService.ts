@@ -106,10 +106,26 @@ const putClientService = async (client: ClientInterface) => {
 	}
 }
 
+const deleteClientService = async (clientId: number) => {
+	try {
+		const deleteAirship = await Clients.destroy({
+			where: {
+				id: clientId,
+			},
+		})
+
+		return deleteAirship
+	} catch (err) {
+		console.error(err)
+		throw new Error("client deletion wasnt possible")
+	}
+}
+
 export {
 	associateFlightWithClient,
 	postClientService,
 	getClientByIdService,
 	getClientService,
 	putClientService,
+	deleteClientService,
 }

@@ -84,7 +84,7 @@ const deleteAirshipService = async (airshipID: number) => {
 		return deleteAirship
 	} catch (err) {
 		console.error(err)
-		throw new Error("airship modification wasnt possible")
+		throw new Error("airship deletion wasnt possible")
 	}
 }
 

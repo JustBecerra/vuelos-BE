@@ -11,6 +11,7 @@ import {
 	getClientById,
 	getClient,
 	putClient,
+	deleteClient,
 } from "../controllers/clientController"
 import {
 	getScheduler,
@@ -39,6 +40,7 @@ router.post("/client", postClient)
 router.get("/client/:clientId", getClientById)
 router.get("/clients", getClient)
 router.put("/client", putClient)
+router.delete("/client/:id", deleteClient)
 
 //users
 router.get("/scheduler", ProtectRoute, getScheduler)
