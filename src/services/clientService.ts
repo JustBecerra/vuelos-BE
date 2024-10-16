@@ -63,7 +63,7 @@ const getClientByIdService = async (clientId: number) => {
 
 const getClientService = async () => {
 	try {
-		const client = await Flights.findAll()
+		const client = await Clients.findAll()
 
 		if (!client) throw new Error("There are no clients scheduled")
 
