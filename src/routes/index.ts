@@ -5,6 +5,7 @@ import {
 	getFlightById,
 	getFlightByClientId,
 	putFlight,
+	deleteFlight,
 } from "../controllers/flightController"
 import {
 	postClientFlight,
@@ -35,6 +36,7 @@ router.get("/flights", getFlights)
 router.put("/flight", putFlight)
 router.get("/flight/:id", getFlightById)
 router.get("/clientflight/:id", getFlightByClientId)
+router.delete("/flight/:id", deleteFlight)
 
 //clients
 router.post("/clients/:clientId/flights/:flightId", postClientFlight)

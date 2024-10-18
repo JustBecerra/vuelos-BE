@@ -45,6 +45,21 @@ const postFlightService = async (flight: FlightInput) => {
 	}
 }
 
+const deleteFlightService = async (id: number) => {
+	try {
+		const deleteFlight = await Flights.destroy({
+			where: {
+				id,
+			},
+		})
+
+		return deleteFlight
+	} catch (err) {
+		console.error(err)
+		return null
+	}
+}
+
 const putFlightService = async (flight: FlightInput) => {
 	const { id, launchtime, arrivaltime, to, from, airship_id, createdby } =
 		flight
@@ -141,4 +156,5 @@ export {
 	getFlightByIdService,
 	getFlightByClientIdService,
 	putFlightService,
+	deleteFlightService,
 }

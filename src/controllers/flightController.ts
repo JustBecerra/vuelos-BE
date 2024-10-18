@@ -5,6 +5,7 @@ import {
 	getFlightByIdService,
 	getFlightByClientIdService,
 	putFlightService,
+	deleteFlightService,
 } from "../services/flightService"
 
 const postFlight = async (req: Request, res: Response): Promise<void> => {
@@ -15,6 +16,25 @@ const postFlight = async (req: Request, res: Response): Promise<void> => {
 		console.error("error adding new flight", error)
 		res.status(500).json({
 			message: "Error creating flight",
+			error: {
+				name: (error as Error).name,
+				message: (error as Error).message,
+				stack: (error as Error).stack,
+			},
+		})
+	}
+}
+
+const deleteFlight = async (req: Request, res: Response) => {
+	try {
+		const flightToDelete = await deleteFlightService(
+			parseInt(req.params.id)
+		)
+		res.status(200).json(flightToDelete)
+	} catch (error) {
+		console.error("error deleting flight", error)
+		res.status(500).json({
+			message: "Error deleting flight",
 			error: {
 				name: (error as Error).name,
 				message: (error as Error).message,
@@ -103,4 +123,11 @@ const getFlightByClientId = async (
 	}
 }
 
-export { postFlight, getFlights, getFlightById, getFlightByClientId, putFlight }
+export {
+	postFlight,
+	getFlights,
+	getFlightById,
+	getFlightByClientId,
+	putFlight,
+	deleteFlight,
+}
