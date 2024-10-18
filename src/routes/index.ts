@@ -4,6 +4,8 @@ import {
 	getFlights,
 	getFlightById,
 	getFlightByClientId,
+	putFlight,
+	deleteFlight,
 } from "../controllers/flightController"
 import {
 	postClientFlight,
@@ -31,8 +33,10 @@ const router: Router = express.Router()
 //flights
 router.post("/flight", postFlight)
 router.get("/flights", getFlights)
+router.put("/flight", putFlight)
 router.get("/flight/:id", getFlightById)
 router.get("/clientflight/:id", getFlightByClientId)
+router.delete("/flight/:id", deleteFlight)
 
 //clients
 router.post("/clients/:clientId/flights/:flightId", postClientFlight)
