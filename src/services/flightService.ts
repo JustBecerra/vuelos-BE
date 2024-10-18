@@ -45,6 +45,40 @@ const postFlightService = async (flight: FlightInput) => {
 	}
 }
 
+const putFlightService = async (flight: FlightInput) => {
+	const { id, launchtime, arrivaltime, to, from, airship_id, createdby } =
+		flight
+	try {
+		const oldFlight = await Flights.findByPk(id)
+
+		if (oldFlight) {
+			const flightToModify = await Flights.update(
+				{
+					launchtime: launchtime || oldFlight.dataValues.launchtime,
+					arrivaltime:
+						arrivaltime || oldFlight.dataValues.arrivaltime,
+					to: to || oldFlight.dataValues.to,
+					from: from || oldFlight.dataValues.from,
+					airship_id: airship_id || oldFlight.dataValues.airship_id,
+					createdby: createdby || oldFlight.dataValues.createdby,
+				},
+				{
+					where: {
+						id,
+					},
+				}
+			)
+			if (flightToModify[0] < 1) return 0
+			return flightToModify
+		} else {
+			return 0
+		}
+	} catch (err) {
+		console.error(err)
+		return null
+	}
+}
+
 const getFlightsService = async () => {
 	try {
 		const flights = await Flights.findAll()
@@ -81,7 +115,9 @@ const getFlightByClientIdService = async (clientID: number) => {
 
 		if (!clientsFlights) return []
 
-		const flightIDs = clientsFlights.map((flight) => flight.dataValues.flightId)
+		const flightIDs = clientsFlights.map(
+			(flight) => flight.dataValues.flightId
+		)
 
 		const flights = await Flights.findAll({
 			where: {
@@ -104,4 +140,5 @@ export {
 	getFlightsService,
 	getFlightByIdService,
 	getFlightByClientIdService,
+	putFlightService,
 }
