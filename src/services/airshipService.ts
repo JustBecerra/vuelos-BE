@@ -7,6 +7,7 @@ interface airshipProps {
 	status: string
 	pricepermiles: number
 	seats: number
+	size: string
 }
 
 const getAirshipsService = async () => {
@@ -23,7 +24,7 @@ const getAirshipsService = async () => {
 }
 
 const postAirshipService = async (airship: airshipProps) => {
-	const { id, title, status, pricepermiles, seats } = airship
+	const { id, title, status, pricepermiles, seats, size } = airship
 	try {
 		const airship = await Airships.create({
 			id,
@@ -31,6 +32,7 @@ const postAirshipService = async (airship: airshipProps) => {
 			status,
 			pricepermiles,
 			seats,
+			size,
 		})
 
 		if (!airship) throw new Error("airship creation went wrong")
@@ -43,7 +45,7 @@ const postAirshipService = async (airship: airshipProps) => {
 }
 
 const putAirshipService = async (airship: airshipProps) => {
-	const { id, title, status, pricepermiles, seats } = airship
+	const { id, title, status, pricepermiles, seats, size } = airship
 	try {
 		const oldAirship = await Airships.findByPk(id)
 
@@ -55,6 +57,7 @@ const putAirshipService = async (airship: airshipProps) => {
 					pricepermiles:
 						pricepermiles || oldAirship.dataValues.pricepermiles,
 					seats: seats || oldAirship.dataValues.seats,
+					size: size || oldAirship.dataValues.size,
 				},
 				{
 					where: {
