@@ -22,7 +22,7 @@ const postFlightService = async (flight: FlightInput) => {
 		if (!schedulerID) throw new Error("Scheduler does not exist")
 
 		if (schedulerID?.dataValues.role !== "admin") {
-			return "Scheduler is not an admin."
+			throw new Error("Scheduler is not an admin.")
 		}
 
 		if (!airshipID) throw new Error("Airship does not exist.")
