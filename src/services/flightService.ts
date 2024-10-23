@@ -13,7 +13,7 @@ interface FlightInput {
 
 const postFlightService = async (flight: FlightInput) => {
 	try {
-		const { id, launchtime, arrivaltime, to, from, airship_id, createdby } =
+		const { launchtime, arrivaltime, to, from, airship_id, createdby } =
 			flight
 
 		const schedulerID = await Schedulers.findByPk(createdby)
@@ -21,13 +21,13 @@ const postFlightService = async (flight: FlightInput) => {
 
 		if (!schedulerID) throw new Error("Scheduler does not exist")
 
-		if (schedulerID?.dataValues.role !== "admin")
+		if (schedulerID?.dataValues.role !== "admin") {
 			throw new Error("Scheduler is not an admin.")
+		}
 
 		if (!airshipID) throw new Error("Airship does not exist.")
 
 		const newFlight = await Flights.create({
-			id,
 			launchtime,
 			arrivaltime,
 			to,

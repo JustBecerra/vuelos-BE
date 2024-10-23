@@ -24,10 +24,9 @@ const getAirshipsService = async () => {
 }
 
 const postAirshipService = async (airship: airshipProps) => {
-	const { id, title, status, pricepermiles, seats, size } = airship
+	const { title, status, pricepermiles, seats, size } = airship
 	try {
 		const airship = await Airships.create({
-			id,
 			title,
 			status,
 			pricepermiles,

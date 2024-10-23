@@ -1,4 +1,4 @@
-import { DataTypes, Model, Sequelize } from "sequelize"
+import { DataTypes, Model, Optional, Sequelize } from "sequelize"
 
 export interface AirshipAttributes {
 	id: number
@@ -9,8 +9,21 @@ export interface AirshipAttributes {
 	size: string
 }
 
+export interface AirshipCreationAttributes
+	extends Optional<AirshipAttributes, "id"> {}
+
+export interface AirshipInstance
+	extends Model<AirshipAttributes, AirshipCreationAttributes> {
+	id: number
+	title: string
+	status: string
+	pricepermiles: number
+	seats: number
+	size: string
+}
+
 const Airship = (sequelize: Sequelize) => {
-	const Airships = sequelize.define<Model<AirshipAttributes>>(
+	const Airships = sequelize.define<AirshipInstance>(
 		"airship",
 		{
 			id: {
