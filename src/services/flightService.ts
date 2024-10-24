@@ -16,16 +16,47 @@ const postFlightService = async (flight: FlightInput) => {
 		const { launchtime, arrivaltime, to, from, airship_id, createdby } =
 			flight
 
-		const schedulerID = await Schedulers.findByPk(createdby)
-		const airshipID = await Airships.findByPk(airship_id)
-
-		if (!schedulerID) throw new Error("Scheduler does not exist")
-
-		if (schedulerID?.dataValues.role !== "admin") {
-			throw new Error("Scheduler is not an admin.")
+		const scheduler = await Schedulers.findByPk(createdby)
+		if (!scheduler) return "Scheduler does not exist"
+		if (scheduler.dataValues.role !== "admin") {
+			return "Scheduler is not an admin."
 		}
 
-		if (!airshipID) throw new Error("Airship does not exist.")
+		const airship = await Airships.findByPk(airship_id)
+		if (!airship) return "Airship does not exist."
+
+		const overlappingFlight = await Flights.findOne({
+			where: {
+				airship_id,
+
+				[Op.or]: [
+					{
+						launchtime: {
+							[Op.between]: [launchtime, arrivaltime],
+						},
+					},
+					{
+						arrivaltime: {
+							[Op.between]: [launchtime, arrivaltime],
+						},
+					},
+					{
+						[Op.and]: [
+							{
+								launchtime: { [Op.lte]: launchtime },
+							},
+							{
+								arrivaltime: { [Op.gte]: arrivaltime },
+							},
+						],
+					},
+				],
+			},
+		})
+
+		if (overlappingFlight) {
+			return "Airship is already scheduled for another flight during this time."
+		}
 
 		const newFlight = await Flights.create({
 			launchtime,
@@ -36,7 +67,7 @@ const postFlightService = async (flight: FlightInput) => {
 			createdby,
 		})
 
-		if (!newFlight) throw new Error("Flight creation went wrong")
+		if (!newFlight) return "Flight creation went wrong"
 
 		return newFlight
 	} catch (err) {
@@ -44,6 +75,7 @@ const postFlightService = async (flight: FlightInput) => {
 		return null
 	}
 }
+
 
 const deleteFlightService = async (id: number) => {
 	try {
