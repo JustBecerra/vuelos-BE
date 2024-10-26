@@ -138,7 +138,7 @@ const getFlightsService = async () => {
 					createdAt,
 					updatedAt,
 					...rest
-				} = flight.toJSON() // Convert to plain object
+				} = flight.toJSON() 
 
 				return {
 					...rest,
