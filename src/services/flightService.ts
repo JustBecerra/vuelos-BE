@@ -131,8 +131,27 @@ const getFlightsService = async () => {
 		const flights = await Flights.findAll()
 
 		if (!flights) throw new Error("There are no flights scheduled")
+			const filteredData = flights.map((flight: any) => {
+				const {
+					launchtime,
+					arrivaltime,
+					createdAt,
+					updatedAt,
+					...rest
+				} = flight.toJSON() 
 
-		return flights
+				return {
+					...rest,
+					launchtime: new Date(launchtime).toISOString().slice(0, 16),
+					arrivaltime: new Date(arrivaltime)
+						.toISOString()
+						.slice(0, 16),
+					createdAt: new Date(createdAt).toISOString().slice(0, 16),
+					updatedAt: new Date(updatedAt).toISOString().slice(0, 16),
+				}
+			})
+
+			return filteredData
 	} catch (err) {
 		console.error(err)
 		return null
