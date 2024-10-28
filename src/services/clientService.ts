@@ -1,5 +1,5 @@
 import db from "../config/dbConfig"
-const { Flights, Clients } = db
+const { Flights, Clients, ClientFlights } = db
 
 interface ClientInterface {
 	id: number
@@ -49,16 +49,16 @@ const postClientService = async (client: ClientInterface) => {
 }
 
 const getClientByIdService = async (clientId: number) => {
-    try {
-        const client = await Clients.findByPk(clientId)
-        if (!client) {
-            throw new Error("Client not found")
-        }
-        return client
-    } catch (error) {
-        console.error("Error fetching client:", error)
-        throw error
-    }
+	try {
+		const client = await Clients.findByPk(clientId)
+		if (!client) {
+			throw new Error("Client not found")
+		}
+		return client
+	} catch (error) {
+		console.error("Error fetching client:", error)
+		throw error
+	}
 }
 
 const getClientService = async () => {
@@ -108,13 +108,22 @@ const putClientService = async (client: ClientInterface) => {
 
 const deleteClientService = async (clientId: number) => {
 	try {
-		const deleteAirship = await Clients.destroy({
+		const deleteClientLink = await ClientFlights.destroy({
 			where: {
-				id: clientId,
+				clientId,
 			},
 		})
 
-		return deleteAirship
+		if (deleteClientLink > 1) {
+			const deleteAirship = await Clients.destroy({
+				where: {
+					id: clientId,
+				},
+			})
+			return deleteAirship
+		} else {
+			return 0
+		}
 	} catch (err) {
 		console.error(err)
 		throw new Error("client deletion wasnt possible")
