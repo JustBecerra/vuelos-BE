@@ -114,16 +114,13 @@ const deleteClientService = async (clientId: number) => {
 			},
 		})
 
-		if (deleteClientLink > 1) {
 			const deleteAirship = await Clients.destroy({
 				where: {
 					id: clientId,
 				},
 			})
 			return deleteAirship
-		} else {
-			return 0
-		}
+
 	} catch (err) {
 		console.error(err)
 		throw new Error("client deletion wasnt possible")
