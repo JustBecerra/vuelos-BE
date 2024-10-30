@@ -8,6 +8,9 @@ interface ClientInterface {
 	email: string
 	phonenumber: string
 	identification: string
+	title: string
+	address: string
+	company: string
 }
 
 const associateFlightWithClient = async (
@@ -30,7 +33,16 @@ const associateFlightWithClient = async (
 }
 
 const postClientService = async (client: ClientInterface) => {
-	const { firstname, lastname, email, phonenumber, identification } = client
+	const {
+		firstname,
+		lastname,
+		email,
+		phonenumber,
+		identification,
+		title,
+		address,
+		company,
+	} = client
 	try {
 		const newClient = await Clients.create({
 			firstname,
@@ -38,6 +50,9 @@ const postClientService = async (client: ClientInterface) => {
 			email,
 			phonenumber,
 			identification,
+			title,
+			address,
+			company,
 		})
 
 		if (!newClient) throw new Error("client creation went wrong")
@@ -75,8 +90,17 @@ const getClientService = async () => {
 }
 
 const putClientService = async (client: ClientInterface) => {
-	const { id, firstname, lastname, email, phonenumber, identification } =
-		client
+	const {
+		id,
+		firstname,
+		lastname,
+		email,
+		phonenumber,
+		identification,
+		title,
+		address,
+		company,
+	} = client
 	try {
 		const oldClient = await Clients.findByPk(id)
 
@@ -88,6 +112,9 @@ const putClientService = async (client: ClientInterface) => {
 					email,
 					phonenumber,
 					identification,
+					title,
+					address,
+					company,
 				},
 				{
 					where: {

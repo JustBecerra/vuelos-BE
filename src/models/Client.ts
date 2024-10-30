@@ -8,6 +8,9 @@ export interface ClientAttributes {
 	email: string
 	phonenumber: string
 	identification: string
+	title: string
+	address: string
+	company: string
 }
 
 export interface ClientCreationAttributes
@@ -21,7 +24,9 @@ export interface ClientInstance
 	email: string
 	phonenumber: string
 	identification: string
-
+	title: string
+	address: string
+	company: string
 	// metodos para asociación de tablas conjuntas
 	addFlight: (flight: FlightAttributes) => Promise<void>
 	getFlights: () => Promise<FlightAttributes[]>
@@ -50,6 +55,15 @@ const Client = (sequelize: Sequelize) => {
 				type: DataTypes.STRING(50),
 			},
 			identification: {
+				type: DataTypes.STRING(50),
+			},
+			title: {
+				type: DataTypes.STRING(50),
+			},
+			address: {
+				type: DataTypes.STRING(50),
+			},
+			company: {
 				type: DataTypes.STRING(50),
 			},
 		},
