@@ -5,6 +5,8 @@ export interface SchedulerAttributes {
 	username: string
 	password: string
 	role: string
+	flights_created: number
+	hours_logged: number
 }
 
 const Scheduler = (sequelize: Sequelize) => {
@@ -24,6 +26,12 @@ const Scheduler = (sequelize: Sequelize) => {
 			},
 			role: {
 				type: DataTypes.STRING(50),
+			},
+			flights_created: {
+				type: DataTypes.INTEGER,
+			},
+			hours_logged: {
+				type: DataTypes.INTEGER,
 			},
 		},
 		{
