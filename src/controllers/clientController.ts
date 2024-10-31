@@ -68,9 +68,9 @@ const putClient = async (req: Request, res: Response) => {
 		const client = await putClientService(req.body)
 
 		if (client === 0) {
-			res.status(400).json({ message: "Airship update failed" })
+			res.status(400).json({ message: "Client update failed" })
 		} else {
-			res.status(200).json({ message: "Airship updated successfully" })
+			res.status(200).json({ message: "Client updated successfully" })
 		}
 	} catch (error) {
 		console.error("error editing client", error)
