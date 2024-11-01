@@ -5,7 +5,7 @@ interface airshipProps {
 	id: number
 	title: string
 	status: string
-	pricepermiles: number
+	pricepermile: number
 	seats: number
 	size: string
 }
@@ -24,12 +24,12 @@ const getAirshipsService = async () => {
 }
 
 const postAirshipService = async (airship: airshipProps) => {
-	const { title, status, pricepermiles, seats, size } = airship
+	const { title, status, pricepermile, seats, size } = airship
 	try {
 		const airship = await Airships.create({
 			title,
 			status,
-			pricepermiles,
+			pricepermile,
 			seats,
 			size,
 		})
@@ -44,7 +44,7 @@ const postAirshipService = async (airship: airshipProps) => {
 }
 
 const putAirshipService = async (airship: airshipProps) => {
-	const { id, title, status, pricepermiles, seats, size } = airship
+	const { id, title, status, pricepermile, seats, size } = airship
 	try {
 		const oldAirship = await Airships.findByPk(id)
 
@@ -53,8 +53,8 @@ const putAirshipService = async (airship: airshipProps) => {
 				{
 					title: title || oldAirship.dataValues.title,
 					status: status || oldAirship.dataValues.status,
-					pricepermiles:
-						pricepermiles || oldAirship.dataValues.pricepermiles,
+					pricepermile:
+						pricepermile || oldAirship.dataValues.pricepermile,
 					seats: seats || oldAirship.dataValues.seats,
 					size: size || oldAirship.dataValues.size,
 				},
