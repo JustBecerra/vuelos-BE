@@ -8,6 +8,7 @@ export interface ClientAttributes {
 	email: string
 	phonenumber: string
 	identification: string
+	typeid: string
 	title: string
 	address: string
 	company: string
@@ -24,6 +25,7 @@ export interface ClientInstance
 	email: string
 	phonenumber: string
 	identification: string
+	typeid: string
 	title: string
 	address: string
 	company: string
@@ -55,6 +57,9 @@ const Client = (sequelize: Sequelize) => {
 				type: DataTypes.STRING(50),
 			},
 			identification: {
+				type: DataTypes.STRING(50),
+			},
+			typeid: {
 				type: DataTypes.STRING(50),
 			},
 			title: {

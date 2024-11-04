@@ -8,6 +8,7 @@ interface ClientInterface {
 	email: string
 	phonenumber: string
 	identification: string
+	typeid: string
 	title: string
 	address: string
 	company: string
@@ -39,6 +40,7 @@ const postClientService = async (client: ClientInterface) => {
 		email,
 		phonenumber,
 		identification,
+		typeid,
 		title,
 		address,
 		company,
@@ -50,6 +52,7 @@ const postClientService = async (client: ClientInterface) => {
 			email,
 			phonenumber,
 			identification,
+			typeid,
 			title,
 			address,
 			company,
@@ -97,6 +100,7 @@ const putClientService = async (client: ClientInterface) => {
 		email,
 		phonenumber,
 		identification,
+		typeid,
 		title,
 		address,
 		company,
@@ -112,6 +116,7 @@ const putClientService = async (client: ClientInterface) => {
 					email,
 					phonenumber,
 					identification,
+					typeid,
 					title,
 					address,
 					company,
