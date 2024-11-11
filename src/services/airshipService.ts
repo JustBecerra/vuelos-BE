@@ -1,5 +1,6 @@
+import { Dropbox } from "dropbox"
 import db from "../config/dbConfig"
-const { Airships } = db
+const { Airships, Images } = db
 
 interface airshipProps {
 	id: number
@@ -8,6 +9,7 @@ interface airshipProps {
 	pricepermile: number
 	seats: number
 	size: string
+	images: File[]
 }
 
 const getAirshipsService = async () => {
@@ -23,10 +25,22 @@ const getAirshipsService = async () => {
 	}
 }
 
-const postAirshipService = async (airship: airshipProps) => {
+const postAirshipService = async (
+	airship: airshipProps,
+	images: Express.Multer.File[]
+) => {
 	const { title, status, pricepermile, seats, size } = airship
 	try {
-		const airship = await Airships.create({
+		if (!process.env.ACCESS_TOKEN) {
+			throw new Error("Dropbox access token is missing or undefined")
+		}
+
+		const dbx = new Dropbox({
+			accessToken: process.env.ACCESS_TOKEN,
+			fetch: fetch,
+		})
+
+		const newAirship = await Airships.create({
 			title,
 			status,
 			pricepermile,
@@ -34,9 +48,37 @@ const postAirshipService = async (airship: airshipProps) => {
 			size,
 		})
 
-		if (!airship) throw new Error("airship creation went wrong")
+		if (!newAirship) throw new Error("Airship creation failed")
 
-		return airship
+		const getAirshipID = await Airships.findOne({ where: { title } })
+
+		for (const file of images) {
+			const response = await dbx.filesUpload({
+				path: `/tangoJets/${file.originalname}`,
+				contents: file.buffer,
+			})
+
+			if (response && response.result.path_display) {
+				const sharedLinkResponse =
+					await dbx.sharingCreateSharedLinkWithSettings({
+						path: response.result.path_display,
+					})
+
+				const sharedLink = sharedLinkResponse.result.url.replace(
+					"dl=0",
+					"raw=1"
+				)
+
+				if (getAirshipID) {
+					await Images.create({
+						image_url: sharedLink,
+						airship_id: getAirshipID.dataValues.id,
+					})
+				}
+			}
+		}
+
+		return newAirship
 	} catch (err) {
 		console.error(err)
 		return null

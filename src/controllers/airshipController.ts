@@ -6,6 +6,7 @@ import {
 	deleteAirshipService,
 } from "../services/airshipService"
 
+
 const getAirships = async (req: Request, res: Response) => {
 	try {
 		const airships = await getAirshipsService()
@@ -26,9 +27,11 @@ const getAirships = async (req: Request, res: Response) => {
 	}
 }
 
-const postAirship = async (req: Request, res: Response) => {
+const postAirship = async (req: Request, res: Response): Promise<void> => {
 	try {
-		const airship = await postAirshipService(req.body)
+		const airshipData = req.body
+		const files = req.files as Express.Multer.File[]
+		const airship = await postAirshipService(airshipData, files)
 
 		if (!airship) res.status(400)
 		res.status(200).json(airship)

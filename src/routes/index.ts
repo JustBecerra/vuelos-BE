@@ -27,6 +27,7 @@ import {
 	deleteAirship,
 } from "../controllers/airshipController"
 import { ProtectRoute } from "../middleware/authMiddleware"
+import multer from "multer"
 
 const router: Router = express.Router()
 
@@ -50,10 +51,11 @@ router.delete("/client/:id", deleteClient)
 router.get("/scheduler", ProtectRoute, getScheduler)
 router.post("/scheduler/login", loginScheduler)
 router.post("/scheduler/register", registerScheduler)
-
+const upload = multer({ storage: multer.memoryStorage() })
 //airships
 router.get("/airships", getAirships)
-router.post("/airship", postAirship)
+router.post("/airship", upload.array("images"), postAirship)
 router.put("/airship", putAirship)
 router.delete("/airship/:id", deleteAirship)
+
 export default router
