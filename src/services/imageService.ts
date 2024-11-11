@@ -14,4 +14,19 @@ const getImagesService = async (id: string) => {
 	}
 }
 
-export { getImagesService }
+const deleteImageByID = async (id: string) => {
+	try {
+		const deleteImage = await Images.destroy({
+			where: {
+				id,
+			},
+		})
+
+		return deleteImage
+	} catch (err) {
+		console.error(err)
+		return null
+	}
+}
+
+export { getImagesService, deleteImageByID }
