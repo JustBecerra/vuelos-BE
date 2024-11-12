@@ -24,7 +24,10 @@ const getAirshipsService = async () => {
 		return null
 	}
 }
-
+const dbx = new Dropbox({
+	accessToken: process.env.ACCESS_TOKEN,
+	fetch: fetch,
+})
 const postAirshipService = async (
 	airship: airshipProps,
 	images: Express.Multer.File[]
@@ -34,11 +37,6 @@ const postAirshipService = async (
 		if (!process.env.ACCESS_TOKEN) {
 			throw new Error("Dropbox access token is missing or undefined")
 		}
-
-		const dbx = new Dropbox({
-			accessToken: process.env.ACCESS_TOKEN,
-			fetch: fetch,
-		})
 
 		const newAirship = await Airships.create({
 			title,
@@ -105,11 +103,22 @@ const postAirshipService = async (
 	}
 }
 
-const putAirshipService = async (airship: airshipProps) => {
+const putAirshipService = async (
+	airship: airshipProps,
+	images: Express.Multer.File[]
+) => {
 	const { id, title, status, pricepermile, seats, size } = airship
 	try {
 		const oldAirship = await Airships.findByPk(id)
 
+		for (const file of images) {
+			// quizas necesite modificar el codigo dentro del for
+			const response = await dbx.filesUpload({
+				path: `/tangoJets/${file.originalname}`,
+				contents: file.buffer,
+				mode: { ".tag": "overwrite" },
+			})
+		}
 		if (oldAirship) {
 			const airshipToModify = await Airships.update(
 				{
@@ -126,6 +135,7 @@ const putAirshipService = async (airship: airshipProps) => {
 					},
 				}
 			)
+
 			if (airshipToModify[0] < 1) return 0
 			return airshipToModify
 		} else {
