@@ -28,7 +28,7 @@ import {
 } from "../controllers/airshipController"
 import { ProtectRoute } from "../middleware/authMiddleware"
 import multer from "multer"
-import { deleteImage, getImage } from "../controllers/imageController"
+import { deleteImage, getImages } from "../controllers/imageController"
 
 const router: Router = express.Router()
 
@@ -61,6 +61,6 @@ router.put("/airship", putAirship)
 router.delete("/airship/:id", deleteAirship)
 
 //images
-router.get("/image", getImage)
+router.get("/images/:id", getImages)
 router.delete("/image/:id", deleteImage)
 export default router

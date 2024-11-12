@@ -3,9 +3,11 @@ const { Images } = db
 
 const getImagesService = async (id: string) => {
 	try {
-		const images = await Images.findAll()
-
-		if (!images) throw new Error("image is not available")
+		const images = await Images.findAll({
+			where: {
+				airship_id: id,
+			},
+		})
 
 		return images
 	} catch (err) {

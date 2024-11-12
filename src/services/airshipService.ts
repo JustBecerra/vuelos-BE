@@ -62,7 +62,6 @@ const postAirshipService = async (
 				let sharedLink
 
 				try {
-					// Attempt to create a shared link
 					const sharedLinkResponse =
 						await dbx.sharingCreateSharedLinkWithSettings({
 							path: response.result.path_display,
@@ -72,7 +71,6 @@ const postAirshipService = async (
 						"raw=1"
 					)
 				} catch (error: any) {
-					// If the error indicates that the shared link already exists, retrieve the existing link
 					if (
 						error.error &&
 						error.error[".tag"] === "shared_link_already_exists"
@@ -87,13 +85,13 @@ const postAirshipService = async (
 						)
 					} else {
 						console.error("Error creating shared link:", error)
-						continue // Skip to the next file if there's an error
+						continue
 					}
 				}
 
 				if (getAirshipID) {
 					await Images.create({
-						image_url: sharedLink, // Store the URL of the uploaded image
+						image_url: sharedLink,
 						airship_id: getAirshipID.dataValues.id,
 					})
 				}

@@ -1,15 +1,18 @@
 import { Request, Response } from "express"
 import { deleteImageByID, getImagesService } from "../services/imageService"
 
-const getImage = async (req: Request, res: Response) => {
+const getImages = async (req: Request, res: Response) => {
 	try {
 		const id = req.params.id
 		const images = await getImagesService(id)
 
-		if (!images) {
-			res.status(204)
+		if (images && images.length === 0) {
+			res.status(400)
 		}
-		res.status(200)
+
+		if (images && images.length > 0) {
+			res.status(200).json(images)
+		}
 	} catch (error) {
 		res.status(500).json({
 			message: "Error getting images",
@@ -44,4 +47,4 @@ const deleteImage = async (req: Request, res: Response) => {
 	}
 }
 
-export { getImage, deleteImage }
+export { getImages, deleteImage }
