@@ -124,6 +124,7 @@ const putAirshipService = async (
 ) => {
 	const { title, status, pricepermile, seats, size } = airship
 	try {
+
 		const Airship = await Airships.findOne({
 			where: {
 				title,
@@ -137,17 +138,72 @@ const putAirshipService = async (
 		})
 
 		for (const oldFile of AirshipImages) {
+			console.log(oldFile.dataValues.dropbox_path)
 			await dbx.filesDeleteV2({
 				path: oldFile.dataValues.dropbox_path, // Use the stored Dropbox path to delete the file
+			})
+
+			await Images.destroy({
+				where: {
+					dropbox_path: oldFile.dataValues.dropbox_path,
+				},
 			})
 		}
 
 		for (const file of images) {
-			const response = await dbx.filesUpload({
-				path: `/tangoJets/${file.originalname}`,
-				contents: file.buffer,
-				mode: { ".tag": "overwrite" },
-			})
+			let response
+			try {
+				response = await dbx.filesUpload({
+					path: `/tangoJets/${file.originalname}`,
+					contents: file.buffer,
+				})
+			} catch (error) {
+				console.error("Error uploading file:", error)
+				continue
+			}
+
+			let sharedLink
+			let urlForDeletion = ""
+
+			if (response?.result?.path_display) {
+				try {
+					const sharedLinkResponse =
+						await dbx.sharingCreateSharedLinkWithSettings({
+							path: response.result.path_display,
+						})
+
+					sharedLink = sharedLinkResponse.result.url.replace(
+						"dl=0",
+						"raw=1"
+					)
+					urlForDeletion = response.result.path_display
+				} catch (error: any) {
+					if (
+						error.error &&
+						error.error[".tag"] === "shared_link_already_exists"
+					) {
+						const existingLinkResponse =
+							await dbx.sharingGetSharedLinkMetadata({
+								url: `https://www.dropbox.com/home${response.result.path_display}`,
+							})
+
+						sharedLink = existingLinkResponse.result.url.replace(
+							"dl=0",
+							"raw=1"
+						)
+						urlForDeletion = response.result.path_display
+					} else {
+						console.error("Error creating shared link:", error)
+						continue
+					}
+				}
+
+				await Images.create({
+					image_url: sharedLink,
+					airship_id: Airship?.dataValues.id as number,
+					dropbox_path: urlForDeletion,
+				})
+			}
 		}
 		if (Airship) {
 			const airshipToModify = await Airships.update(
