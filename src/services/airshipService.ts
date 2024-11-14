@@ -122,89 +122,92 @@ const putAirshipService = async (
 	airship: airshipProps,
 	images: Express.Multer.File[]
 ) => {
-	const { title, status, pricepermile, seats, size } = airship
+	const { id, title, status, pricepermile, seats, size } = airship
 	try {
-
+		console.log({ id })
 		const Airship = await Airships.findOne({
 			where: {
-				title,
+				id,
 			},
 		})
-
+		console.log("asd", title)
 		const AirshipImages = await Images.findAll({
 			where: {
 				airship_id: Airship?.dataValues.id,
 			},
 		})
 
-		for (const oldFile of AirshipImages) {
-			console.log(oldFile.dataValues.dropbox_path)
-			await dbx.filesDeleteV2({
-				path: oldFile.dataValues.dropbox_path, // Use the stored Dropbox path to delete the file
-			})
-
-			await Images.destroy({
-				where: {
-					dropbox_path: oldFile.dataValues.dropbox_path,
-				},
-			})
-		}
-
-		for (const file of images) {
-			let response
-			try {
-				response = await dbx.filesUpload({
-					path: `/tangoJets/${file.originalname}`,
-					contents: file.buffer,
+		if (images.length > 0) {
+			for (const oldFile of AirshipImages) {
+				await dbx.filesDeleteV2({
+					path: oldFile.dataValues.dropbox_path,
 				})
-			} catch (error) {
-				console.error("Error uploading file:", error)
-				continue
+
+				await Images.destroy({
+					where: {
+						dropbox_path: oldFile.dataValues.dropbox_path,
+					},
+				})
 			}
 
-			let sharedLink
-			let urlForDeletion = ""
-
-			if (response?.result?.path_display) {
+			for (const file of images) {
+				let response
 				try {
-					const sharedLinkResponse =
-						await dbx.sharingCreateSharedLinkWithSettings({
-							path: response.result.path_display,
-						})
+					response = await dbx.filesUpload({
+						path: `/tangoJets/${file.originalname}`,
+						contents: file.buffer,
+					})
+				} catch (error) {
+					console.error("Error uploading file:", error)
+					continue
+				}
 
-					sharedLink = sharedLinkResponse.result.url.replace(
-						"dl=0",
-						"raw=1"
-					)
-					urlForDeletion = response.result.path_display
-				} catch (error: any) {
-					if (
-						error.error &&
-						error.error[".tag"] === "shared_link_already_exists"
-					) {
-						const existingLinkResponse =
-							await dbx.sharingGetSharedLinkMetadata({
-								url: `https://www.dropbox.com/home${response.result.path_display}`,
+				let sharedLink
+				let urlForDeletion = ""
+
+				if (response?.result?.path_display) {
+					try {
+						const sharedLinkResponse =
+							await dbx.sharingCreateSharedLinkWithSettings({
+								path: response.result.path_display,
 							})
 
-						sharedLink = existingLinkResponse.result.url.replace(
+						sharedLink = sharedLinkResponse.result.url.replace(
 							"dl=0",
 							"raw=1"
 						)
 						urlForDeletion = response.result.path_display
-					} else {
-						console.error("Error creating shared link:", error)
-						continue
-					}
-				}
+					} catch (error: any) {
+						if (
+							error.error &&
+							error.error[".tag"] === "shared_link_already_exists"
+						) {
+							const existingLinkResponse =
+								await dbx.sharingGetSharedLinkMetadata({
+									url: `https://www.dropbox.com/home${response.result.path_display}`,
+								})
 
-				await Images.create({
-					image_url: sharedLink,
-					airship_id: Airship?.dataValues.id as number,
-					dropbox_path: urlForDeletion,
-				})
+							sharedLink =
+								existingLinkResponse.result.url.replace(
+									"dl=0",
+									"raw=1"
+								)
+							urlForDeletion = response.result.path_display
+						} else {
+							console.error("Error creating shared link:", error)
+							continue
+						}
+					}
+
+					await Images.create({
+						image_url: sharedLink,
+						airship_id: Airship?.dataValues.id as number,
+						dropbox_path: urlForDeletion,
+					})
+				}
 			}
 		}
+
 		if (Airship) {
 			const airshipToModify = await Airships.update(
 				{
