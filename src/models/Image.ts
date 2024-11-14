@@ -3,6 +3,7 @@ import { DataTypes, Model, Sequelize } from "sequelize"
 export interface ImageAttributes {
 	id?: number
 	image_url: string
+	dropbox_path: string
 	airship_id: number
 }
 
@@ -16,6 +17,10 @@ const image = (sequelize: Sequelize) => {
 				autoIncrement: true,
 			},
 			image_url: {
+				type: DataTypes.TEXT,
+				allowNull: false,
+			},
+			dropbox_path: {
 				type: DataTypes.TEXT,
 				allowNull: false,
 			},

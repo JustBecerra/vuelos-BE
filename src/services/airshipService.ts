@@ -50,24 +50,38 @@ const postAirshipService = async (
 
 		const getAirshipID = await Airships.findOne({ where: { title } })
 
+		if (!getAirshipID) {
+			console.error("Airship not found")
+			return null
+		}
+
 		for (const file of images) {
-			const response = await dbx.filesUpload({
-				path: `/tangoJets/${file.originalname}`,
-				contents: file.buffer,
-			})
+			let response
+			try {
+				response = await dbx.filesUpload({
+					path: `/tangoJets/${file.originalname}`,
+					contents: file.buffer,
+				})
+			} catch (error) {
+				console.error("Error uploading file:", error)
+				continue
+			}
 
-			if (response && response.result.path_display) {
-				let sharedLink
+			let sharedLink
+			let urlForDeletion = ""
 
+			if (response?.result?.path_display) {
 				try {
 					const sharedLinkResponse =
 						await dbx.sharingCreateSharedLinkWithSettings({
 							path: response.result.path_display,
 						})
+
 					sharedLink = sharedLinkResponse.result.url.replace(
 						"dl=0",
 						"raw=1"
 					)
+					urlForDeletion = response.result.path_display
 				} catch (error: any) {
 					if (
 						error.error &&
@@ -77,28 +91,29 @@ const postAirshipService = async (
 							await dbx.sharingGetSharedLinkMetadata({
 								url: `https://www.dropbox.com/home${response.result.path_display}`,
 							})
+
 						sharedLink = existingLinkResponse.result.url.replace(
 							"dl=0",
 							"raw=1"
 						)
+						urlForDeletion = response.result.path_display
 					} else {
 						console.error("Error creating shared link:", error)
 						continue
 					}
 				}
 
-				if (getAirshipID) {
-					await Images.create({
-						image_url: sharedLink,
-						airship_id: getAirshipID.dataValues.id,
-					})
-				}
+				await Images.create({
+					image_url: sharedLink,
+					airship_id: getAirshipID.dataValues.id,
+					dropbox_path: urlForDeletion,
+				})
 			}
 		}
 
 		return newAirship
 	} catch (err) {
-		console.error(err)
+		console.error("Error in postAirshipService:", err)
 		return null
 	}
 }
@@ -107,31 +122,46 @@ const putAirshipService = async (
 	airship: airshipProps,
 	images: Express.Multer.File[]
 ) => {
-	const { id, title, status, pricepermile, seats, size } = airship
+	const { title, status, pricepermile, seats, size } = airship
 	try {
-		const oldAirship = await Airships.findByPk(id)
+		const Airship = await Airships.findOne({
+			where: {
+				title,
+			},
+		})
+
+		const AirshipImages = await Images.findAll({
+			where: {
+				airship_id: Airship?.dataValues.id,
+			},
+		})
+
+		for (const oldFile of AirshipImages) {
+			await dbx.filesDeleteV2({
+				path: oldFile.dataValues.dropbox_path, // Use the stored Dropbox path to delete the file
+			})
+		}
 
 		for (const file of images) {
-			// quizas necesite modificar el codigo dentro del for
 			const response = await dbx.filesUpload({
 				path: `/tangoJets/${file.originalname}`,
 				contents: file.buffer,
 				mode: { ".tag": "overwrite" },
 			})
 		}
-		if (oldAirship) {
+		if (Airship) {
 			const airshipToModify = await Airships.update(
 				{
-					title: title || oldAirship.dataValues.title,
-					status: status || oldAirship.dataValues.status,
+					title: title || Airship.dataValues.title,
+					status: status || Airship.dataValues.status,
 					pricepermile:
-						pricepermile || oldAirship.dataValues.pricepermile,
-					seats: seats || oldAirship.dataValues.seats,
-					size: size || oldAirship.dataValues.size,
+						pricepermile || Airship.dataValues.pricepermile,
+					seats: seats || Airship.dataValues.seats,
+					size: size || Airship.dataValues.size,
 				},
 				{
 					where: {
-						id,
+						id: Airship.dataValues.id,
 					},
 				}
 			)
