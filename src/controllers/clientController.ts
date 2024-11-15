@@ -66,7 +66,7 @@ const getClient = async (req: Request, res: Response): Promise<void> => {
 const putClient = async (req: Request, res: Response) => {
 	try {
 		const client = await putClientService(req.body)
-		console.log(req.body)
+
 		if (client === 0) {
 			res.status(400).json({ message: "Client update failed" })
 		} else {

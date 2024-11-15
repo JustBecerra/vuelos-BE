@@ -124,13 +124,11 @@ const putAirshipService = async (
 ) => {
 	const { id, title, status, pricepermile, seats, size } = airship
 	try {
-		console.log({ id })
 		const Airship = await Airships.findOne({
 			where: {
 				id,
 			},
 		})
-		console.log("asd", title)
 		const AirshipImages = await Images.findAll({
 			where: {
 				airship_id: Airship?.dataValues.id,
