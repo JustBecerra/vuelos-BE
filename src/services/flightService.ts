@@ -97,7 +97,6 @@ const putFlightService = async (flight: FlightInput) => {
 		flight
 	try {
 		const oldFlight = await Flights.findByPk(id)
-
 		if (oldFlight) {
 			const flightToModify = await Flights.update(
 				{

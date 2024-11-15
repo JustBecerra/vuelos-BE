@@ -49,7 +49,11 @@ const deleteFlight = async (req: Request, res: Response) => {
 const putFlight = async (req: Request, res: Response) => {
 	try {
 		const flight = await putFlightService(req.body)
-		res.status(200).json(flight)
+		if (flight === 0) {
+			res.status(400).json({ message: "Airship update failed" })
+		} else {
+			res.status(200).json({ message: "Airship updated successfully" })
+		}
 	} catch (error) {
 		console.error("error editing flight", error)
 		res.status(500).json({

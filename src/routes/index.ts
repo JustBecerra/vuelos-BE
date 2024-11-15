@@ -57,7 +57,7 @@ router.post("/scheduler/register", registerScheduler)
 const upload = multer({ storage: multer.memoryStorage() })
 router.get("/airships", getAirships)
 router.post("/airship", upload.array("images"), postAirship) //crea aeronave y sus imagenes
-router.put("/airship", putAirship)
+router.put("/airship", upload.array("images"), putAirship)
 router.delete("/airship/:id", deleteAirship)
 
 //images
