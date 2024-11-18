@@ -236,18 +236,35 @@ const putAirshipService = async (
 
 const deleteAirshipService = async (airshipID: number) => {
 	try {
-		const deleteAirship = await Airships.destroy({
-			where: {
-				id: airshipID,
-			},
+		const AirshipImages = await Images.findAll({
+			where: { airship_id: airshipID },
 		})
 
+		await Promise.all(
+			AirshipImages.map(async (oldFile) => {
+				try {
+					await dbx.filesDeleteV2({
+						path: oldFile.dataValues.dropbox_path,
+					})
+				} catch (error) {
+					console.error("Error deleting file from Dropbox:", error)
+				}
+				await Images.destroy({
+					where: { dropbox_path: oldFile.dataValues.dropbox_path },
+				})
+			})
+		)
+
+		const deleteAirship = await Airships.destroy({
+			where: { id: airshipID },
+		})
 		return deleteAirship
 	} catch (err) {
 		console.error(err)
-		throw new Error("airship deletion wasnt possible")
+		throw new Error("Airship deletion wasn't possible")
 	}
 }
+
 
 export {
 	getAirshipsService,
