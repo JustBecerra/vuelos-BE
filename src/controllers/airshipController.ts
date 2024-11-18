@@ -78,7 +78,7 @@ const deleteAirship = async (req: Request, res: Response) => {
 		if (airship === 0) {
 			res.status(400).json({ message: "Airship deletion failed" })
 		} else {
-			res.status(200).json({ message: "Airship updated successfully" })
+			res.status(200).json({ message: "Airship deleted successfully" })
 		}
 	} catch (error) {
 		res.status(500).json({
