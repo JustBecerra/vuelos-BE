@@ -39,7 +39,6 @@ const postAirshipService = async (
 			throw new Error("Dropbox access token is missing or undefined")
 		}
 
-		// Create the new airship in the database
 		const newAirship = await Airships.create({
 			title,
 			status,
@@ -60,7 +59,7 @@ const postAirshipService = async (
 		for (const file of images) {
 			let response
 			try {
-				// Upload the file to Dropbox
+				// Subir archivo a Dropbox
 				response = await dbx.filesUpload({
 					path: `/tangoJets/${file.originalname}`,
 					contents: file.buffer,
