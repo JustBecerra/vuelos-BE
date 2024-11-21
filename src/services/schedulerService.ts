@@ -24,6 +24,8 @@ const RegisterSchedulerService = async (scheduler: SchedulerAttributes) => {
 			role,
 			flights_created: 0,
 			hours_logged: 0,
+			refresh_token: "",
+			access_token: "",
 		})
 
 		return newScheduler
