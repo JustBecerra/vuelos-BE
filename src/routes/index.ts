@@ -29,7 +29,7 @@ import {
 import { ProtectRoute } from "../middleware/authMiddleware"
 import multer from "multer"
 import { deleteImage, getImages } from "../controllers/imageController"
-
+import { getAccessToken } from "../middleware/refreshToken"
 const router: Router = express.Router()
 
 //flights
@@ -66,5 +66,5 @@ router.get("/images/:id", getImages)
 router.delete("/image/:id", deleteImage)
 
 //auth
-router.get("/auth")
+router.get("/auth/:id", getAccessToken)
 export default router

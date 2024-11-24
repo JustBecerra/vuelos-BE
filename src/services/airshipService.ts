@@ -1,5 +1,6 @@
 import { Dropbox } from "dropbox"
 import db from "../config/dbConfig"
+import { getAccessToken } from "../middleware/refreshToken"
 const { Airships, Images } = db
 
 interface airshipProps {
@@ -24,20 +25,20 @@ const getAirshipsService = async () => {
 		return null
 	}
 }
-const dbx = new Dropbox({
-	accessToken: process.env.ACCESS_TOKEN,
-	fetch: fetch,
-})
 
 const postAirshipService = async (
 	airship: airshipProps,
-	images: Express.Multer.File[]
+	images: Express.Multer.File[],
+	currentUserId: number
 ) => {
 	const { title, status, pricepermile, seats, size } = airship
 	try {
-		if (!process.env.ACCESS_TOKEN) {
-			throw new Error("Dropbox access token is missing or undefined")
-		}
+		const AccessToken = await getAccessToken(currentUserId)
+
+		const dbx = new Dropbox({
+			accessToken: AccessToken,
+			fetch: fetch,
+		})
 
 		const newAirship = await Airships.create({
 			title,
@@ -118,10 +119,18 @@ const postAirshipService = async (
 
 const putAirshipService = async (
 	airship: airshipProps,
-	images: Express.Multer.File[]
+	images: Express.Multer.File[],
+	currentUserId: number
 ) => {
 	const { id, title, status, pricepermile, seats, size } = airship
 	try {
+		const AccessToken = await getAccessToken(currentUserId)
+		console.log({ AccessToken })
+		const dbx = new Dropbox({
+			accessToken: AccessToken,
+			fetch: fetch,
+		})
+
 		const Airship = await Airships.findOne({
 			where: {
 				id,
@@ -232,8 +241,18 @@ const putAirshipService = async (
 	}
 }
 
-const deleteAirshipService = async (airshipID: number) => {
+const deleteAirshipService = async (
+	airshipID: number,
+	currentUserId: number
+) => {
 	try {
+		const AccessToken = await getAccessToken(currentUserId)
+
+		const dbx = new Dropbox({
+			accessToken: AccessToken,
+			fetch: fetch,
+		})
+
 		const AirshipImages = await Images.findAll({
 			where: { airship_id: airshipID },
 		})

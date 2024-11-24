@@ -18,6 +18,16 @@ const storeRefreshToken = async (
 	}
 }
 
+export const getAccessToken = async (userId: number) => {
+	try {
+		const accessToken = await refreshAccessToken(userId)
+
+		return accessToken
+	} catch (error) {
+		console.log(error)
+	}
+}
+
 const refreshAccessToken = async (userId: number) => {
 	const { DROPBOX_APP_KEY, DROPBOX_APP_SECRET } = process.env
 
@@ -27,44 +37,46 @@ const refreshAccessToken = async (userId: number) => {
 
 	try {
 		// Retrieve the refresh token from the database
-		const result = await Schedulers.findOne({
+		const refresh_token = await Schedulers.findOne({
 			where: {
 				id: userId,
 			},
 		}).then((response) => response?.dataValues.refresh_token)
 
-		if (!result) {
-			throw new Error("Refresh token not found for this user")
+		if (refresh_token) {
+			const response = await fetch(
+				"https://api.dropbox.com/oauth2/token",
+				{
+					method: "POST",
+					headers: {
+						Authorization: `Basic ${auth}`,
+						"Content-Type": "application/x-www-form-urlencoded",
+					},
+					body: new URLSearchParams({
+						grant_type: "refresh_token",
+						refresh_token: refresh_token, // Use the stored refresh token
+					}).toString(),
+				}
+			)
+
+			const data = await response.json()
+			console.log({ data })
+			if (data.error) {
+				throw new Error(
+					data.error_description || "Error refreshing token"
+				)
+			}
+
+			const { access_token, expires_in } = data
+
+			storeRefreshToken(userId, refresh_token, access_token)
+
+			return access_token
 		}
-
-		const response = await fetch("https://api.dropbox.com/oauth2/token", {
-			method: "POST",
-			headers: {
-				Authorization: `Basic ${auth}`,
-				"Content-Type": "application/x-www-form-urlencoded",
-			},
-			body: new URLSearchParams({
-				grant_type: "refresh_token",
-				refresh_token: result, // Use the stored refresh token
-			}).toString(),
-		})
-
-		const data = await response.json()
-
-		if (data.error) {
-			throw new Error(data.error_description || "Error refreshing token")
-		}
-
-		const { access_token, expires_in } = data
-
-		// Optionally, update the access token in the database
-		await Schedulers.update({ access_token }, { where: { id: userId } })
-
-		return access_token
 	} catch (error) {
 		console.error("Error refreshing token:", error)
 		throw new Error("Failed to refresh access token")
 	}
 }
 
-module.exports = { refreshAccessToken, storeRefreshToken }
+module.exports = { refreshAccessToken, storeRefreshToken, getAccessToken }
