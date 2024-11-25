@@ -19,6 +19,8 @@ import {
 	getScheduler,
 	registerScheduler,
 	loginScheduler,
+	getAccessToken,
+	getRefreshToken,
 } from "../controllers/schedulerController"
 import {
 	getAirships,
@@ -29,7 +31,6 @@ import {
 import { ProtectRoute } from "../middleware/authMiddleware"
 import multer from "multer"
 import { deleteImage, getImages } from "../controllers/imageController"
-import { getAccessToken } from "../middleware/refreshToken"
 const router: Router = express.Router()
 
 //flights
@@ -66,5 +67,6 @@ router.get("/images/:id", getImages)
 router.delete("/image/:id", deleteImage)
 
 //auth
-router.get("/auth/:id", getAccessToken)
+router.get("/refresh/:id", getRefreshToken)
+router.post("/access", getAccessToken)
 export default router

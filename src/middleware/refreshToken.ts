@@ -2,27 +2,11 @@ require("dotenv").config()
 import db from "../config/dbConfig"
 const { Schedulers } = db
 
-const storeRefreshToken = async (
-	userId: number,
-	refreshToken: string,
-	accessToken: string
-) => {
+export const getRefreshToken = async (userId: number) => {
 	try {
-		const refreshedScheduler = await Schedulers.update(
-			{ refresh_token: refreshToken, access_token: accessToken },
-			{ where: { id: userId } }
-		)
-	} catch (error) {
-		console.error("Error storing refresh token:", error)
-		throw new Error("Failed to store refresh token")
-	}
-}
+		const refreshToken = await refreshAccessToken(userId)
 
-export const getAccessToken = async (userId: number) => {
-	try {
-		const accessToken = await refreshAccessToken(userId)
-
-		return accessToken
+		return refreshToken
 	} catch (error) {
 		console.log(error)
 	}
@@ -36,7 +20,6 @@ const refreshAccessToken = async (userId: number) => {
 	).toString("base64")
 
 	try {
-		// Retrieve the refresh token from the database
 		const refresh_token = await Schedulers.findOne({
 			where: {
 				id: userId,
@@ -60,7 +43,7 @@ const refreshAccessToken = async (userId: number) => {
 			)
 
 			const data = await response.json()
-			console.log({ data })
+
 			if (data.error) {
 				throw new Error(
 					data.error_description || "Error refreshing token"
@@ -69,9 +52,12 @@ const refreshAccessToken = async (userId: number) => {
 
 			const { access_token, expires_in } = data
 
-			storeRefreshToken(userId, refresh_token, access_token)
+			const refreshedScheduler = await Schedulers.update(
+				{ refresh_token, access_token },
+				{ where: { id: userId } }
+			)
 
-			return access_token
+			return refreshedScheduler
 		}
 	} catch (error) {
 		console.error("Error refreshing token:", error)
@@ -79,4 +65,7 @@ const refreshAccessToken = async (userId: number) => {
 	}
 }
 
-module.exports = { refreshAccessToken, storeRefreshToken, getAccessToken }
+module.exports = {
+	refreshAccessToken,
+	getRefreshToken,
+}

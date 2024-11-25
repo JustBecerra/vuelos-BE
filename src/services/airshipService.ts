@@ -1,7 +1,7 @@
 import { Dropbox } from "dropbox"
 import db from "../config/dbConfig"
-import { getAccessToken } from "../middleware/refreshToken"
-const { Airships, Images } = db
+import Scheduler from "../models/Scheduler"
+const { Airships, Images, Schedulers } = db
 
 interface airshipProps {
 	id: number
@@ -33,7 +33,11 @@ const postAirshipService = async (
 ) => {
 	const { title, status, pricepermile, seats, size } = airship
 	try {
-		const AccessToken = await getAccessToken(currentUserId)
+		const AccessToken = await Schedulers.findOne({
+			where: {
+				id: currentUserId,
+			},
+		}).then((response) => response?.dataValues.refresh_token)
 
 		const dbx = new Dropbox({
 			accessToken: AccessToken,
@@ -124,8 +128,11 @@ const putAirshipService = async (
 ) => {
 	const { id, title, status, pricepermile, seats, size } = airship
 	try {
-		const AccessToken = await getAccessToken(currentUserId)
-		console.log({ AccessToken })
+		const AccessToken = await Schedulers.findOne({
+			where: {
+				id: currentUserId,
+			},
+		}).then((response) => response?.dataValues.refresh_token)
 		const dbx = new Dropbox({
 			accessToken: AccessToken,
 			fetch: fetch,
@@ -246,7 +253,11 @@ const deleteAirshipService = async (
 	currentUserId: number
 ) => {
 	try {
-		const AccessToken = await getAccessToken(currentUserId)
+		const AccessToken = await Schedulers.findOne({
+			where: {
+				id: currentUserId,
+			},
+		}).then((response) => response?.dataValues.refresh_token)
 
 		const dbx = new Dropbox({
 			accessToken: AccessToken,
