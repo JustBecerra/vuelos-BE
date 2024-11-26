@@ -8,12 +8,9 @@ import ImagesModel from "../models/Image"
 import ClientFlightsModel from "../models/ClientFlights"
 require("dotenv").config()
 
-const sequelize = new Sequelize(
-	`postgres://postgres:${process.env.PASSWORD}@localhost:5432/${process.env.NAME}`,
-	{
-		logging: false,
-	}
-)
+const sequelize = new Sequelize(`${process.env.DATABASE_URL}`, {
+	logging: false,
+})
 
 const Schedulers = SchedulersModel(sequelize)
 const Flights = FlightsModel(sequelize)
