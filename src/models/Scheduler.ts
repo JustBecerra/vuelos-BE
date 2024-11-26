@@ -7,6 +7,8 @@ export interface SchedulerAttributes {
 	role: string
 	flights_created: number
 	hours_logged: number
+	refresh_token: string
+	access_token: string
 }
 
 const Scheduler = (sequelize: Sequelize) => {
@@ -32,6 +34,12 @@ const Scheduler = (sequelize: Sequelize) => {
 			},
 			hours_logged: {
 				type: DataTypes.INTEGER,
+			},
+			refresh_token: {
+				type: DataTypes.STRING(255),
+			},
+			access_token: {
+				type: DataTypes.STRING(255),
 			},
 		},
 		{

@@ -19,6 +19,8 @@ import {
 	getScheduler,
 	registerScheduler,
 	loginScheduler,
+	getAccessToken,
+	getRefreshToken,
 } from "../controllers/schedulerController"
 import {
 	getAirships,
@@ -29,7 +31,6 @@ import {
 import { ProtectRoute } from "../middleware/authMiddleware"
 import multer from "multer"
 import { deleteImage, getImages } from "../controllers/imageController"
-
 const router: Router = express.Router()
 
 //flights
@@ -55,6 +56,7 @@ router.post("/scheduler/register", registerScheduler)
 
 //airships
 const upload = multer({ storage: multer.memoryStorage() })
+
 router.get("/airships", getAirships)
 router.post("/airship", upload.array("images"), postAirship) //crea aeronave y sus imagenes
 router.put("/airship", upload.array("images"), putAirship)
@@ -63,4 +65,8 @@ router.delete("/airship/:id", deleteAirship)
 //images
 router.get("/images/:id", getImages)
 router.delete("/image/:id", deleteImage)
+
+//auth
+router.get("/refresh/:id", getRefreshToken)
+router.post("/access", getAccessToken)
 export default router
