@@ -45,7 +45,9 @@ Flights.belongsToMany(Clients, {
 	as: "clients",
 })
 
-sequelize.sync()
+sequelize.sync({ force: true }).then(() => {
+	console.log("Database synchronized.")
+})
 
 export default {
 	Schedulers,
