@@ -2,7 +2,7 @@
 	"name": "vuelos-be",
 	"version": "1.0.0",
 	"description": "Backend server for handling flight data",
-	"main": "/dist/index.js",
+	"main": "dist/index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"start": "nodemon -L dist/index.js",
