@@ -37,7 +37,7 @@ const postAirshipService = async (
 			where: {
 				id: currentUserId,
 			},
-		}).then((response) => response?.dataValues.refresh_token)
+		}).then((response) => response?.dataValues.access_token)
 
 		const dbx = new Dropbox({
 			accessToken: AccessToken,
@@ -132,7 +132,8 @@ const putAirshipService = async (
 			where: {
 				id: currentUserId,
 			},
-		}).then((response) => response?.dataValues.refresh_token)
+		}).then((response) => response?.dataValues.access_token)
+		console.log({ AccessToken })
 		const dbx = new Dropbox({
 			accessToken: AccessToken,
 			fetch: fetch,

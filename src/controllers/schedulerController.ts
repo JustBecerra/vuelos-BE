@@ -35,9 +35,10 @@ const getScheduler = async (req: AuthenticatedRequest, res: Response) => {
 
 const getAccessToken = async (req: Request, res: Response) => {
 	try {
-		const accessToken = await storeAccessToken(req.body)
-
-		if (!accessToken) {
+		const { accessToken, id } = req.body
+		const Token = await storeAccessToken({ accessToken, id })
+		console.log(accessToken)
+		if (!Token) {
 			res.status(400).json({ message: "access token wasnt stored" })
 			return
 		}
