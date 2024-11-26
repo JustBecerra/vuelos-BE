@@ -8,19 +8,17 @@ import ImagesModel from "../models/Image"
 import ClientFlightsModel from "../models/ClientFlights"
 require("dotenv").config()
 
-const sequelize = new Sequelize(
-	`postgres://${process.env.USER}:${process.env.PASSWORD}@vuelosdb.internal:${process.env.DB_PORT}/${process.env.NAME}`,
-	{
-		logging: false,
-		dialect: "postgres",
-		dialectOptions: {
-			ssl: {
-				require: true,
-				rejectUnauthorized: false,
-			},
+const sequelize = new Sequelize(`${process.env.DATABASE_URL}`, {
+	logging: false,
+	dialect: "postgres",
+	dialectOptions: {
+		ssl: {
+			require: true,
+			rejectUnauthorized: false,
 		},
-	}
-)
+	},
+})
+  
   
 
 const Schedulers = SchedulersModel(sequelize)
