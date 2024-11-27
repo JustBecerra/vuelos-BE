@@ -19,8 +19,6 @@ const sequelize = new Sequelize(`${process.env.DATABASE_URL}`, {
 	},
 })
   
-  
-
 const Schedulers = SchedulersModel(sequelize)
 const Flights = FlightsModel(sequelize)
 const Airships = AirshipsModel(sequelize)
