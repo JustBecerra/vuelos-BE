@@ -1,7 +1,7 @@
 "use strict"
 
 module.exports = {
-	async up(queryInterface, Sequelize) {
+	up: async (queryInterface, Sequelize) => {
 		await queryInterface.createTable("airship", {
 			id: {
 				type: Sequelize.DataTypes.INTEGER,
@@ -23,18 +23,10 @@ module.exports = {
 			size: {
 				type: Sequelize.DataTypes.STRING(50),
 			},
-			createdAt: {
-				type: Sequelize.DataTypes.DATE,
-				defaultValue: Sequelize.DataTypes.NOW,
-			},
-			updatedAt: {
-				type: Sequelize.DataTypes.DATE,
-				defaultValue: Sequelize.DataTypes.NOW,
-			},
 		})
 	},
 
-	async down(queryInterface, Sequelize) {
+	down: async (queryInterface, Sequelize) => {
 		await queryInterface.dropTable("airship")
 	},
 }

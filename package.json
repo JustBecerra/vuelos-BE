@@ -6,7 +6,8 @@
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"start": "nodemon -L dist/index.js",
-		"build": "tsc"
+		"build": "tsc",
+		"migrate-prod": "npx sequelize-cli db:migrate --env production"
 	},
 	"author": "",
 	"license": "ISC",
