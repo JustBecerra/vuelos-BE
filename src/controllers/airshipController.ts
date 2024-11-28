@@ -33,11 +33,7 @@ const postAirship = async (req: Request, res: Response): Promise<void> => {
 		const currentUserId = airshipData.currentUserId
 		const files = req.files as Express.Multer.File[]
 
-		const airship = await postAirshipService(
-			airshipData,
-			files,
-			currentUserId
-		)
+		const airship = await postAirshipService(airshipData, files)
 
 		if (!airship) {
 			res.status(400).json({ error: "no airship was added" })
