@@ -115,17 +115,17 @@ const putAirshipService = async (
 		})
 
 		if (images) {
-			for (const oldFile of AirshipImages) {
-				await dbx.filesDeleteV2({
-					path: oldFile.dataValues.dropbox_path,
-				})
+			// for (const oldFile of AirshipImages) {
+			// 	await dbx.filesDeleteV2({
+			// 		path: oldFile.dataValues.dropbox_path,
+			// 	})
 
-				await Images.destroy({
-					where: {
-						dropbox_path: oldFile.dataValues.dropbox_path,
-					},
-				})
-			}
+			// 	await Images.destroy({
+			// 		where: {
+			// 			dropbox_path: oldFile.dataValues.dropbox_path,
+			// 		},
+			// 	})
+			// }
 
 			for (const file of images) {
 				try {
@@ -172,13 +172,13 @@ const putAirshipService = async (
 						}
 					}
 
-					if (response.result.path_display) {
-						await Images.create({
-							image_url: sharedLink,
-							airship_id: Airship?.dataValues.id as number,
-							dropbox_path: response.result.path_display,
-						})
-					}
+					// if (response.result.path_display) {
+					// 	await Images.create({
+					// 		image_url: sharedLink,
+					// 		airship_id: Airship?.dataValues.id as number,
+					// 		dropbox_path: response.result.path_display,
+					// 	})
+					// }
 				} catch (error) {
 					console.error("Error processing file:", error)
 				}
@@ -233,20 +233,20 @@ const deleteAirshipService = async (
 			where: { airship_id: airshipID },
 		})
 
-		await Promise.all(
-			AirshipImages.map(async (oldFile) => {
-				try {
-					await dbx.filesDeleteV2({
-						path: oldFile.dataValues.dropbox_path,
-					})
-				} catch (error) {
-					console.error("Error deleting file from Dropbox:", error)
-				}
-				await Images.destroy({
-					where: { dropbox_path: oldFile.dataValues.dropbox_path },
-				})
-			})
-		)
+		// await Promise.all(
+		// 	AirshipImages.map(async (oldFile) => {
+		// 		try {
+		// 			await dbx.filesDeleteV2({
+		// 				path: oldFile.dataValues.dropbox_path,
+		// 			})
+		// 		} catch (error) {
+		// 			console.error("Error deleting file from Dropbox:", error)
+		// 		}
+		// 		await Images.destroy({
+		// 			where: { dropbox_path: oldFile.dataValues.dropbox_path },
+		// 		})
+		// 	})
+		// )
 
 		const deleteAirship = await Airships.destroy({
 			where: { id: airshipID },
