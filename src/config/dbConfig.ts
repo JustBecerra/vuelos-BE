@@ -43,7 +43,7 @@ Flights.belongsToMany(Clients, {
 	as: "clients",
 })
 
-sequelize.sync()
+// sequelize.sync()
 
 export default {
 	Schedulers,

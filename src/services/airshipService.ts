@@ -1,6 +1,8 @@
 import { Dropbox } from "dropbox"
 import db from "../config/dbConfig"
-import Scheduler from "../models/Scheduler"
+import fs from "fs"
+import path from "path"
+import { promisify } from "util"
 const { Airships, Images, Schedulers } = db
 
 interface airshipProps {
@@ -26,24 +28,16 @@ const getAirshipsService = async () => {
 	}
 }
 
+const writeFile = promisify(fs.writeFile)
+
 const postAirshipService = async (
 	airship: airshipProps,
-	images: Express.Multer.File[],
-	currentUserId: number
+	images: Express.Multer.File[]
 ) => {
 	const { title, status, pricepermile, seats, size } = airship
+
 	try {
-		const AccessToken = await Schedulers.findOne({
-			where: {
-				id: currentUserId,
-			},
-		}).then((response) => response?.dataValues.access_token)
-
-		const dbx = new Dropbox({
-			accessToken: AccessToken,
-			fetch: fetch,
-		})
-
+		// Create a new airship entry in the database
 		const newAirship = await Airships.create({
 			title,
 			status,
@@ -54,63 +48,33 @@ const postAirshipService = async (
 
 		if (!newAirship) throw new Error("Airship creation failed")
 
-		const getAirshipID = await Airships.findOne({ where: { title } })
+		const airshipID = newAirship.dataValues.id
 
-		if (!getAirshipID) {
-			console.error("Airship not found")
-			return null
+		// Path to the persistent disk directory
+		const uploadDirectory = "/var/data/uploads"
+
+		// Ensure the upload directory exists
+		if (!fs.existsSync(uploadDirectory)) {
+			fs.mkdirSync(uploadDirectory, { recursive: true })
 		}
 
+		// Save each uploaded file to the persistent disk
 		for (const file of images) {
-			let response
+			const filePath = path.join(uploadDirectory, file.originalname)
+
 			try {
-				// Subir archivo a Dropbox
-				response = await dbx.filesUpload({
-					path: `/tangoJets/${file.originalname}`,
-					contents: file.buffer,
+				// Save the file to the disk
+				await writeFile(filePath, file.buffer)
+
+				// Store the file path in the database
+				await Images.create({
+					image_url: `/uploads/${file.originalname}`, // URL relative to your static file server
+					airship_id: airshipID,
+					local_path: filePath, // Absolute path on the server
 				})
 			} catch (error) {
-				console.error("Error uploading file:", error)
+				console.error(`Error saving file ${file.originalname}:`, error)
 				continue
-			}
-
-			let sharedLink
-			let urlForUpload = response.result.path_display
-
-			try {
-				const existingLinks = await dbx.sharingListSharedLinks({
-					path: urlForUpload,
-					direct_only: true,
-				})
-
-				if (existingLinks?.result?.links?.length > 0) {
-					sharedLink = existingLinks.result.links[0].url.replace(
-						"dl=0",
-						"raw=1"
-					)
-				} else {
-					if (urlForUpload) {
-						const sharedLinkResponse =
-							await dbx.sharingCreateSharedLinkWithSettings({
-								path: urlForUpload,
-							})
-						sharedLink = sharedLinkResponse.result.url.replace(
-							"dl=0",
-							"raw=1"
-						)
-					}
-				}
-			} catch (error: any) {
-				console.error("Error handling shared link:", error)
-				continue
-			}
-
-			if (sharedLink && urlForUpload) {
-				await Images.create({
-					image_url: sharedLink,
-					airship_id: getAirshipID.dataValues.id,
-					dropbox_path: urlForUpload,
-				})
 			}
 		}
 
@@ -133,7 +97,7 @@ const putAirshipService = async (
 				id: currentUserId,
 			},
 		}).then((response) => response?.dataValues.access_token)
-		console.log({ AccessToken })
+
 		const dbx = new Dropbox({
 			accessToken: AccessToken,
 			fetch: fetch,
