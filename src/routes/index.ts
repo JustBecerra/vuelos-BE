@@ -19,8 +19,6 @@ import {
 	getScheduler,
 	registerScheduler,
 	loginScheduler,
-	getAccessToken,
-	getRefreshToken,
 } from "../controllers/schedulerController"
 import {
 	getAirships,
@@ -66,7 +64,4 @@ router.delete("/airship/:id", deleteAirship)
 router.get("/images/:id", getImages)
 router.delete("/image/:id", deleteImage)
 
-//auth
-router.get("/refresh/:id", getRefreshToken)
-router.post("/access", getAccessToken)
 export default router
