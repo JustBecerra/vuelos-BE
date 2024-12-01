@@ -45,9 +45,19 @@ const postAirshipService = async (
 		if (!newAirship) throw new Error("Airship creation failed")
 
 		const airshipID = newAirship.dataValues.id
-		console.log({ images })
+
+		const filteredImages = images.filter((value, index, self) => {
+			const originalName = value.originalname.trim().toLowerCase()
+			const firstOccurrenceIndex = self.findIndex(
+				(item) =>
+					item.originalname.trim().toLowerCase() === originalName
+			)
+
+			return firstOccurrenceIndex === index // Keep only the first occurrence
+		})
+
 		// Ensure the upload directory exists on the Render server
-		for (const file of images) {
+		for (const file of filteredImages) {
 			try {
 				// Store the file path in the database
 				await Images.create({
