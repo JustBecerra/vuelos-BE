@@ -2,7 +2,7 @@ import { Dropbox } from "dropbox"
 import db from "../config/dbConfig"
 import { Client } from "node-scp"
 const { Airships, Images, Schedulers } = db
-
+import fs from "fs"
 interface airshipProps {
 	id: number
 	title: string
@@ -51,7 +51,7 @@ const postAirshipService = async (
 			host: "vuelos-be.onrender.com",
 			port: 22,
 			username: "justin", // or your specific user
-			password: "ssh srv-ct305ujqf0us73a39r4g@ssh.oregon.render.com", // or SSH key auth
+			privateKey: fs.readFileSync("C:/Users/Justo/.ssh/id_rsa"), // or SSH key auth
 		})
 
 		const uploadDirectory = "/var/data" // Path on Render's persistent disk
