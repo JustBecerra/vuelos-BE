@@ -2,7 +2,7 @@ import { DataTypes, Model, Sequelize } from "sequelize"
 
 export interface ImageAttributes {
 	id?: number
-	image_url: string
+	image: Buffer
 	local_path: string
 	airship_id: number
 }
@@ -16,13 +16,13 @@ const image = (sequelize: Sequelize) => {
 				primaryKey: true,
 				autoIncrement: true,
 			},
-			image_url: {
-				type: DataTypes.TEXT,
+			image: {
+				type: DataTypes.BLOB,
 				allowNull: false,
 			},
 			local_path: {
 				type: DataTypes.TEXT,
-				allowNull: false,
+				allowNull: true,
 			},
 			airship_id: {
 				type: DataTypes.INTEGER,

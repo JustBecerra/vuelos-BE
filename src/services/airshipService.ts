@@ -45,29 +45,15 @@ const postAirshipService = async (
 		if (!newAirship) throw new Error("Airship creation failed")
 
 		const airshipID = newAirship.dataValues.id
-
-		// SCP Configuration
-		const scpClient = await Client({
-			host: "vuelos-be.onrender.com",
-			port: 22,
-			username: "justin", // or your specific user
-			privateKey: fs.readFileSync("C:/Users/Justo/.ssh/id_rsa"), // or SSH key auth
-		})
-
-		const uploadDirectory = "/var/data" // Path on Render's persistent disk
-
+		console.log({ images })
 		// Ensure the upload directory exists on the Render server
 		for (const file of images) {
 			try {
-				// Upload the file to Render using SCP
-				const remoteFilePath = `${uploadDirectory}/${file.originalname}`
-				await scpClient.uploadFile(file.path, remoteFilePath) // Use file.path for local file
-
 				// Store the file path in the database
 				await Images.create({
-					image_url: `/uploads/${file.originalname}`, // URL relative to your static file server
+					image: file.buffer, // URL relative to your static file server
 					airship_id: airshipID,
-					local_path: remoteFilePath, // Path on the server
+					local_path: "", // Path on the server
 				})
 			} catch (error) {
 				console.error(
@@ -77,9 +63,6 @@ const postAirshipService = async (
 				continue
 			}
 		}
-
-		// Close the SCP client after the operation
-		await scpClient.close()
 
 		return newAirship
 	} catch (err) {
