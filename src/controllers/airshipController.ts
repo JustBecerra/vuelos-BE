@@ -30,7 +30,6 @@ const getAirships = async (req: Request, res: Response) => {
 const postAirship = async (req: Request, res: Response): Promise<void> => {
 	try {
 		const airshipData = req.body
-		const currentUserId = airshipData.currentUserId
 		const files = req.files as Express.Multer.File[]
 
 		const airship = await postAirshipService(airshipData, files)
@@ -82,11 +81,8 @@ const putAirship = async (req: Request, res: Response) => {
 
 const deleteAirship = async (req: Request, res: Response) => {
 	try {
-		const currentUserId = req.params.userId
-		const airship = await deleteAirshipService(
-			parseInt(req.params.id),
-			parseInt(currentUserId)
-		)
+		const id = parseInt(req.params.id)
+		const airship = await deleteAirshipService(id)
 
 		if (airship === 0) {
 			res.status(400).json({ message: "Airship deletion failed" })
