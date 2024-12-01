@@ -1,8 +1,6 @@
 import { Dropbox } from "dropbox"
 import db from "../config/dbConfig"
-import fs from "fs"
-import path from "path"
-import { promisify } from "util"
+import { Client } from "node-scp"
 const { Airships, Images, Schedulers } = db
 
 interface airshipProps {
@@ -28,8 +26,6 @@ const getAirshipsService = async () => {
 	}
 }
 
-const writeFile = promisify(fs.writeFile)
-
 const postAirshipService = async (
 	airship: airshipProps,
 	images: Express.Multer.File[]
@@ -50,33 +46,40 @@ const postAirshipService = async (
 
 		const airshipID = newAirship.dataValues.id
 
-		// Path to the persistent disk directory
-		const uploadDirectory = "/var/data/uploads"
+		// SCP Configuration
+		const scpClient = await Client({
+			host: "https://vuelos-be.onrender.com",
+			port: 22,
+			username: "justin", // or your specific user
+			password: "ssh srv-ct305ujqf0us73a39r4g@ssh.oregon.render.com", // or SSH key auth
+		})
 
-		// Ensure the upload directory exists
-		if (!fs.existsSync(uploadDirectory)) {
-			fs.mkdirSync(uploadDirectory, { recursive: true })
-		}
+		const uploadDirectory = "/var/data" // Path on Render's persistent disk
 
-		// Save each uploaded file to the persistent disk
+		// Ensure the upload directory exists on the Render server
 		for (const file of images) {
-			const filePath = path.join(uploadDirectory, file.originalname)
-
 			try {
-				// Save the file to the disk
-				await writeFile(filePath, file.buffer)
+				// Upload the file to Render using SCP
+				const remoteFilePath = `${uploadDirectory}/${file.originalname}`
+				await scpClient.uploadFile(file.path, remoteFilePath) // Use file.path for local file
 
 				// Store the file path in the database
 				await Images.create({
 					image_url: `/uploads/${file.originalname}`, // URL relative to your static file server
 					airship_id: airshipID,
-					local_path: filePath, // Absolute path on the server
+					local_path: remoteFilePath, // Path on the server
 				})
 			} catch (error) {
-				console.error(`Error saving file ${file.originalname}:`, error)
+				console.error(
+					`Error uploading file ${file.originalname}:`,
+					error
+				)
 				continue
 			}
 		}
+
+		// Close the SCP client after the operation
+		await scpClient.close()
 
 		return newAirship
 	} catch (err) {
@@ -213,45 +216,16 @@ const putAirshipService = async (
 	}
 }
 
-const deleteAirshipService = async (
-	airshipID: number,
-	currentUserId: number
-) => {
+const deleteAirshipService = async (airshipID: number) => {
 	try {
-		const AccessToken = await Schedulers.findOne({
-			where: {
-				id: currentUserId,
-			},
-		}).then((response) => response?.dataValues.refresh_token)
+		const airship = await Airships.findByPk(airshipID)
 
-		const dbx = new Dropbox({
-			accessToken: AccessToken,
-			fetch: fetch,
-		})
-
-		const AirshipImages = await Images.findAll({
-			where: { airship_id: airshipID },
-		})
-
-		// await Promise.all(
-		// 	AirshipImages.map(async (oldFile) => {
-		// 		try {
-		// 			await dbx.filesDeleteV2({
-		// 				path: oldFile.dataValues.dropbox_path,
-		// 			})
-		// 		} catch (error) {
-		// 			console.error("Error deleting file from Dropbox:", error)
-		// 		}
-		// 		await Images.destroy({
-		// 			where: { dropbox_path: oldFile.dataValues.dropbox_path },
-		// 		})
-		// 	})
-		// )
-
-		const deleteAirship = await Airships.destroy({
-			where: { id: airshipID },
-		})
-		return deleteAirship
+		if (airship) {
+			const deleteAirship = await airship.destroy()
+			return deleteAirship
+		} else {
+			return 0
+		}
 	} catch (err) {
 		console.error(err)
 		throw new Error("Airship deletion wasn't possible")
