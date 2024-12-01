@@ -48,7 +48,7 @@ const postAirshipService = async (
 
 		// SCP Configuration
 		const scpClient = await Client({
-			host: "https://vuelos-be.onrender.com",
+			host: "vuelos-be.onrender.com",
 			port: 22,
 			username: "justin", // or your specific user
 			password: "ssh srv-ct305ujqf0us73a39r4g@ssh.oregon.render.com", // or SSH key auth
