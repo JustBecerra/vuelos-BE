@@ -83,98 +83,29 @@ const postAirshipService = async (
 
 const putAirshipService = async (
 	airship: airshipProps,
-	images: Express.Multer.File[],
-	currentUserId: number
+	images: Express.Multer.File[]
 ) => {
 	const { id, title, status, pricepermile, seats, size } = airship
 	try {
-		const AccessToken = await Schedulers.findOne({
-			where: {
-				id: currentUserId,
-			},
-		}).then((response) => response?.dataValues.access_token)
-
-		const dbx = new Dropbox({
-			accessToken: AccessToken,
-			fetch: fetch,
-		})
-
 		const Airship = await Airships.findOne({
 			where: {
 				id,
 			},
 		})
-		const AirshipImages = await Images.findAll({
-			where: {
-				airship_id: Airship?.dataValues.id,
-			},
-		})
 
 		if (images) {
-			// for (const oldFile of AirshipImages) {
-			// 	await dbx.filesDeleteV2({
-			// 		path: oldFile.dataValues.dropbox_path,
-			// 	})
-
-			// 	await Images.destroy({
-			// 		where: {
-			// 			dropbox_path: oldFile.dataValues.dropbox_path,
-			// 		},
-			// 	})
-			// }
-
+			await Images.destroy({
+				where: {
+					airship_id: Airship?.dataValues.id as number,
+				},
+			})
 			for (const file of images) {
 				try {
-					// chequear si el archivo existe antes de subirlo
-					try {
-						const metadata = await dbx.filesGetMetadata({
-							path: `/tangoJets/${file.originalname}`,
-						})
-						continue // saltear una vuelta en el loop si ya existe
-					} catch (err) {
-						console.log(
-							"File does not exist, proceeding with upload..."
-						)
-					}
-
-					// Subir archivo
-					const response = await dbx.filesUpload({
-						path: `/tangoJets/${file.originalname}`,
-						contents: file.buffer,
+					await Images.create({
+						image: file.buffer,
+						airship_id: Airship?.dataValues.id as number,
+						local_path: "",
 					})
-
-					// Chequear por links ya existentes
-					const existingLinks = await dbx.sharingListSharedLinks({
-						path: response.result.path_display,
-						direct_only: true,
-					})
-
-					let sharedLink = ""
-					if (existingLinks.result.links.length > 0) {
-						sharedLink = existingLinks.result.links[0].url.replace(
-							"dl=0",
-							"raw=1"
-						) //supuestamente necesito cambiar eso en la url para guardarlo
-					} else {
-						if (response.result.path_display) {
-							const sharedLinkResponse =
-								await dbx.sharingCreateSharedLinkWithSettings({
-									path: response.result.path_display,
-								})
-							sharedLink = sharedLinkResponse.result.url.replace(
-								"dl=0",
-								"raw=1"
-							)
-						}
-					}
-
-					// if (response.result.path_display) {
-					// 	await Images.create({
-					// 		image_url: sharedLink,
-					// 		airship_id: Airship?.dataValues.id as number,
-					// 		dropbox_path: response.result.path_display,
-					// 	})
-					// }
 				} catch (error) {
 					console.error("Error processing file:", error)
 				}
