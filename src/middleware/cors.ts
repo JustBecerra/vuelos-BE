@@ -1,8 +1,9 @@
 import cors from "cors"
 
 const corsConfig = cors({
-	origin: "http://localhost:4321",
+	origin: "https://tango-jets-fe.vercel.app",
 	methods: ["GET", "POST", "PUT", "DELETE"],
+	allowedHeaders: ["Content-Type", "Authorization"],
 	credentials: true,
 })
 
