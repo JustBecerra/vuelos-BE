@@ -4,7 +4,8 @@ import { corsConfig } from "../middleware/cors"
 import routes from "../routes/index"
 
 const server = express()
-server.use(corsConfig)
+// server.use(corsConfig)
+server.options('*', corsConfig);
 server.use(helmetMiddleware)
 server.use(limiter)
 server.use(express.json())
