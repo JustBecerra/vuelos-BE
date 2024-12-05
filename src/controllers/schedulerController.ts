@@ -4,7 +4,6 @@ import {
 	LoginSchedulerService,
 } from "../services/schedulerService"
 import { AuthenticatedRequest } from "../middleware/authMiddleware"
-import cookie from "cookie"
 
 const getScheduler = async (req: AuthenticatedRequest, res: Response) => {
 	try {
@@ -40,17 +39,6 @@ const loginScheduler = async (req: Request, res: Response) => {
 			res.status(401).json({ message: LogUser })
 			return
 		}
-
-		res.setHeader(
-			"Set-Cookie",
-			cookie.serialize("token", LogUser, {
-				httpOnly: true,
-				secure: process.env.NODE_ENV === "production", // Set to true for HTTPS
-				maxAge: 60 * 60, // 1 hour
-				path: "/",
-				sameSite: "strict",
-			})
-		)
 
 		res.status(200).json({
 			success: true,
