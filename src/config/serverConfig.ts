@@ -2,10 +2,11 @@ import express, { Request, Response, NextFunction } from "express"
 import { helmetMiddleware, limiter } from "../middleware/security"
 import { corsConfig } from "../middleware/cors"
 import routes from "../routes/index"
-
+import cookieParser from "cookie-parser"
 const server = express()
 server.use(corsConfig)
 server.use(helmetMiddleware)
+server.use(cookieParser())
 server.use(limiter)
 server.use(express.json())
 server.use("/", routes)
