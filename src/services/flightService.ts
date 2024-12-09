@@ -7,23 +7,37 @@ interface FlightInput {
 	arrivaltime: Date
 	to: string
 	from: string
-	airship_id: number
-	createdby: number
+	airship_title: string
+	createdby: string
 }
 
 const postFlightService = async (flight: FlightInput) => {
 	try {
-		const { launchtime, arrivaltime, to, from, airship_id, createdby } =
+		const { launchtime, arrivaltime, to, from, airship_title, createdby } =
 			flight
 
-		const scheduler = await Schedulers.findByPk(createdby)
+		const scheduler = await Schedulers.findOne({
+			where: {
+				username: createdby,
+			},
+		})
+
 		if (!scheduler) return "Scheduler does not exist"
+
+		const scheduler_id = scheduler.dataValues.id
 		if (scheduler.dataValues.role !== "admin") {
 			return "Scheduler is not an admin."
 		}
 
-		const airship = await Airships.findByPk(airship_id)
+		const airship = await Airships.findOne({
+			where: {
+				title: airship_title,
+			},
+		})
+
 		if (!airship) return "Airship does not exist."
+
+		const airship_id = airship?.dataValues.id
 
 		const overlappingFlight = await Flights.findOne({
 			where: {
@@ -64,7 +78,7 @@ const postFlightService = async (flight: FlightInput) => {
 			to,
 			from,
 			airship_id,
-			createdby,
+			createdby: scheduler_id,
 		})
 
 		if (!newFlight) return "Flight creation went wrong"
@@ -75,7 +89,6 @@ const postFlightService = async (flight: FlightInput) => {
 		return null
 	}
 }
-
 
 const deleteFlightService = async (id: number) => {
 	try {
@@ -93,11 +106,29 @@ const deleteFlightService = async (id: number) => {
 }
 
 const putFlightService = async (flight: FlightInput) => {
-	const { id, launchtime, arrivaltime, to, from, airship_id, createdby } =
+	const { id, launchtime, arrivaltime, to, from, airship_title, createdby } =
 		flight
 	try {
 		const oldFlight = await Flights.findByPk(id)
 		if (oldFlight) {
+			const airship = await Airships.findOne({
+				where: {
+					title: airship_title,
+				},
+			})
+
+			if (!airship) return "Airship does not exist."
+
+			const airship_id = airship?.dataValues.id
+
+			const scheduler = await Schedulers.findOne({
+				where: {
+					username: createdby,
+				},
+			})
+			if (!scheduler) return "Scheduler does not exist"
+
+			const scheduler_id = scheduler.dataValues.id
 			const flightToModify = await Flights.update(
 				{
 					launchtime: launchtime || oldFlight.dataValues.launchtime,
@@ -106,7 +137,7 @@ const putFlightService = async (flight: FlightInput) => {
 					to: to || oldFlight.dataValues.to,
 					from: from || oldFlight.dataValues.from,
 					airship_id: airship_id || oldFlight.dataValues.airship_id,
-					createdby: createdby || oldFlight.dataValues.createdby,
+					createdby: scheduler_id || oldFlight.dataValues.createdby,
 				},
 				{
 					where: {
