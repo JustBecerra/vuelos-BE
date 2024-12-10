@@ -156,8 +156,11 @@ const putFlightService = async (flight: FlightInput) => {
 	}
 }
 
-const getFlightScheduler = async (createdby: string) => {
-	return await Schedulers.findByPk(createdby)
+const getAlteredValues = async (createdby: string, id: number) => {
+	const schedulerFound = (await Schedulers.findByPk(createdby))?.dataValues
+		.username
+	const airshipName = (await Airships.findByPk(id))?.dataValues.title
+	return { schedulerFound, airshipName }
 }
 
 const getFlightsService = async () => {
@@ -172,17 +175,23 @@ const getFlightsService = async () => {
 				createdAt,
 				updatedAt,
 				createdby,
+				airship_id,
 				...rest
 			} = flight.toJSON()
 
-			return getFlightScheduler(createdby).then((flightScheduler) => ({
-				launchtime: new Date(launchtime).toISOString().slice(0, 16),
-				arrivaltime: new Date(arrivaltime).toISOString().slice(0, 16),
-				createdAt: new Date(createdAt).toISOString().slice(0, 16),
-				updatedAt: new Date(updatedAt).toISOString().slice(0, 16),
-				createdby: flightScheduler?.dataValues.username,
-				...rest,
-			}))
+			return getAlteredValues(createdby, airship_id).then(
+				(alteredData) => ({
+					launchtime: new Date(launchtime).toISOString().slice(0, 16),
+					arrivaltime: new Date(arrivaltime)
+						.toISOString()
+						.slice(0, 16),
+					createdAt: new Date(createdAt).toISOString().slice(0, 16),
+					updatedAt: new Date(updatedAt).toISOString().slice(0, 16),
+					createdby: alteredData?.schedulerFound,
+					airship_id: alteredData?.airshipName,
+					...rest,
+				})
+			)
 		})
 		const filteredData = await Promise.all(filteredDataPromises)
 

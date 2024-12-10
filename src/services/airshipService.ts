@@ -1,8 +1,6 @@
-import { Dropbox } from "dropbox"
 import db from "../config/dbConfig"
-import { Client } from "node-scp"
-const { Airships, Images, Schedulers } = db
-import fs from "fs"
+const { Airships, Images } = db
+
 interface airshipProps {
 	id: number
 	title: string
@@ -155,7 +153,6 @@ const deleteAirshipService = async (airshipID: number) => {
 		throw new Error("Airship deletion wasn't possible")
 	}
 }
-
 
 export {
 	getAirshipsService,
