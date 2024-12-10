@@ -7,13 +7,13 @@ interface FlightInput {
 	arrivaltime: Date
 	to: string
 	from: string
-	airship_title: string
+	airship_name: string
 	createdby: string
 }
 
 const postFlightService = async (flight: FlightInput) => {
 	try {
-		const { launchtime, arrivaltime, to, from, airship_title, createdby } =
+		const { launchtime, arrivaltime, to, from, airship_name, createdby } =
 			flight
 
 		const scheduler = await Schedulers.findOne({
@@ -31,7 +31,7 @@ const postFlightService = async (flight: FlightInput) => {
 
 		const airship = await Airships.findOne({
 			where: {
-				title: airship_title,
+				title: airship_name,
 			},
 		})
 
@@ -106,14 +106,14 @@ const deleteFlightService = async (id: number) => {
 }
 
 const putFlightService = async (flight: FlightInput) => {
-	const { id, launchtime, arrivaltime, to, from, airship_title, createdby } =
-		flight
+	const { id, launchtime, arrivaltime, to, from, airship_name } = flight
 	try {
 		const oldFlight = await Flights.findByPk(id)
+
 		if (oldFlight) {
 			const airship = await Airships.findOne({
 				where: {
-					title: airship_title,
+					title: airship_name,
 				},
 			})
 
@@ -121,14 +121,6 @@ const putFlightService = async (flight: FlightInput) => {
 
 			const airship_id = airship?.dataValues.id
 
-			const scheduler = await Schedulers.findOne({
-				where: {
-					username: createdby,
-				},
-			})
-			if (!scheduler) return "Scheduler does not exist"
-
-			const scheduler_id = scheduler.dataValues.id
 			const flightToModify = await Flights.update(
 				{
 					launchtime: launchtime || oldFlight.dataValues.launchtime,
@@ -137,7 +129,7 @@ const putFlightService = async (flight: FlightInput) => {
 					to: to || oldFlight.dataValues.to,
 					from: from || oldFlight.dataValues.from,
 					airship_id: airship_id || oldFlight.dataValues.airship_id,
-					createdby: scheduler_id || oldFlight.dataValues.createdby,
+					createdby: oldFlight.dataValues.createdby,
 				},
 				{
 					where: {
