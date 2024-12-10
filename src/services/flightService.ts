@@ -188,7 +188,7 @@ const getFlightsService = async () => {
 					createdAt: new Date(createdAt).toISOString().slice(0, 16),
 					updatedAt: new Date(updatedAt).toISOString().slice(0, 16),
 					createdby: alteredData?.schedulerFound,
-					airship_id: alteredData?.airshipName,
+					airship_name: alteredData?.airshipName,
 					...rest,
 				})
 			)
