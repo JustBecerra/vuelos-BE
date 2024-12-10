@@ -156,32 +156,37 @@ const putFlightService = async (flight: FlightInput) => {
 	}
 }
 
+const getFlightScheduler = async (createdby: string) => {
+	return await Schedulers.findByPk(createdby)
+}
+
 const getFlightsService = async () => {
 	try {
 		const flights = await Flights.findAll()
 
 		if (!flights) throw new Error("There are no flights scheduled")
-			const filteredData = flights.map((flight: any) => {
-				const {
-					launchtime,
-					arrivaltime,
-					createdAt,
-					updatedAt,
-					...rest
-				} = flight.toJSON() 
+		const filteredDataPromises = flights.map((flight: any) => {
+			const {
+				launchtime,
+				arrivaltime,
+				createdAt,
+				updatedAt,
+				createdby,
+				...rest
+			} = flight.toJSON()
 
-				return {
-					...rest,
-					launchtime: new Date(launchtime).toISOString().slice(0, 16),
-					arrivaltime: new Date(arrivaltime)
-						.toISOString()
-						.slice(0, 16),
-					createdAt: new Date(createdAt).toISOString().slice(0, 16),
-					updatedAt: new Date(updatedAt).toISOString().slice(0, 16),
-				}
-			})
+			return getFlightScheduler(createdby).then((flightScheduler) => ({
+				launchtime: new Date(launchtime).toISOString().slice(0, 16),
+				arrivaltime: new Date(arrivaltime).toISOString().slice(0, 16),
+				createdAt: new Date(createdAt).toISOString().slice(0, 16),
+				updatedAt: new Date(updatedAt).toISOString().slice(0, 16),
+				createdby: flightScheduler?.dataValues.username,
+				...rest,
+			}))
+		})
+		const filteredData = await Promise.all(filteredDataPromises)
 
-			return filteredData
+		return filteredData
 	} catch (err) {
 		console.error(err)
 		return null
