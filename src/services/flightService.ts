@@ -206,7 +206,7 @@ const getFlightsService = async () => {
 		const flights = await Flights.findAll()
 
 		if (!flights) throw new Error("There are no flights scheduled")
-		const filteredDataPromises = flights.map((flight: any) => {
+		const filteredDataPromises = flights.map(async (flight: any) => {
 			const {
 				launchtime,
 				arrivaltime,
@@ -219,6 +219,8 @@ const getFlightsService = async () => {
 				...rest
 			} = flight.toJSON()
 
+			const masterPassenger = await Clients.findByPk(master_passenger)
+
 			return getAlteredValues(createdby, airship_id).then(
 				(alteredData) => ({
 					launchtime: new Date(launchtime).toISOString().slice(0, 16),
@@ -229,6 +231,10 @@ const getFlightsService = async () => {
 					updatedAt: new Date(updatedAt).toISOString().slice(0, 16),
 					createdby: alteredData?.schedulerFound,
 					airship_name: alteredData?.airshipName,
+					master_passenger:
+						masterPassenger &&
+						masterPassenger?.dataValues.firstname +
+							masterPassenger?.dataValues.lastname,
 					...rest,
 				})
 			)
