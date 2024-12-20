@@ -1,6 +1,6 @@
 import db from "../config/dbConfig"
 import { Op } from "sequelize"
-const { Flights, Schedulers, Airships, ClientFlights } = db
+const { Flights, Schedulers, Airships, ClientFlights, Clients } = db
 interface FlightInput {
 	id: number
 	launchtime: Date
@@ -9,12 +9,22 @@ interface FlightInput {
 	from: string
 	airship_name: string
 	createdby: string
+	master_passenger: string
+	companion_passengers: string[]
 }
 
 const postFlightService = async (flight: FlightInput) => {
 	try {
-		const { launchtime, arrivaltime, to, from, airship_name, createdby } =
-			flight
+		const {
+			launchtime,
+			arrivaltime,
+			to,
+			from,
+			airship_name,
+			createdby,
+			master_passenger,
+			companion_passengers,
+		} = flight
 
 		const scheduler = await Schedulers.findOne({
 			where: {
@@ -72,18 +82,32 @@ const postFlightService = async (flight: FlightInput) => {
 			return "Airship is already scheduled for another flight during this time."
 		}
 
-		const newFlight = await Flights.create({
-			launchtime,
-			arrivaltime,
-			to,
-			from,
-			airship_id,
-			createdby: scheduler_id,
-		})
+		const FullName = master_passenger.split(" ")
+		const masterPassenger = await Clients.findOne({
+			where: {
+				firstname: FullName[0],
+				lastname: FullName[1],
+			},
+		}).then((res) => res?.dataValues.id)
 
-		if (!newFlight) return "Flight creation went wrong"
+		if (masterPassenger) {
+			const newFlight = await Flights.create({
+				launchtime,
+				arrivaltime,
+				to,
+				from,
+				airship_id,
+				createdby: scheduler_id,
+				master_passenger: masterPassenger,
+				companion_passengers,
+			})
 
-		return newFlight
+			if (!newFlight) return "Flight creation went wrong"
+
+			return newFlight
+		}
+
+		return "Flight doesnt have passengers"
 	} catch (err) {
 		console.error(err)
 		return null
@@ -106,7 +130,16 @@ const deleteFlightService = async (id: number) => {
 }
 
 const putFlightService = async (flight: FlightInput) => {
-	const { id, launchtime, arrivaltime, to, from, airship_name } = flight
+	const {
+		id,
+		launchtime,
+		arrivaltime,
+		to,
+		from,
+		airship_name,
+		master_passenger,
+		companion_passengers,
+	} = flight
 	try {
 		const oldFlight = await Flights.findByPk(id)
 
@@ -120,6 +153,13 @@ const putFlightService = async (flight: FlightInput) => {
 			if (!airship) return "Airship does not exist."
 
 			const airship_id = airship?.dataValues.id
+			const FullName = master_passenger.split(" ")
+			const masterPassenger = await Clients.findOne({
+				where: {
+					firstname: FullName[0],
+					lastname: FullName[1],
+				},
+			}).then((res) => res?.dataValues.id)
 
 			const flightToModify = await Flights.update(
 				{
@@ -130,6 +170,12 @@ const putFlightService = async (flight: FlightInput) => {
 					from: from || oldFlight.dataValues.from,
 					airship_id: airship_id || oldFlight.dataValues.airship_id,
 					createdby: oldFlight.dataValues.createdby,
+					master_passenger:
+						masterPassenger ||
+						oldFlight.dataValues.master_passenger,
+					companion_passengers:
+						companion_passengers ||
+						oldFlight.dataValues.companion_passengers,
 				},
 				{
 					where: {
@@ -168,6 +214,8 @@ const getFlightsService = async () => {
 				updatedAt,
 				createdby,
 				airship_id,
+				master_passenger,
+				companion_passengers,
 				...rest
 			} = flight.toJSON()
 

@@ -8,6 +8,8 @@ export interface FlightAttributes {
 	from: string
 	airship_id: number
 	createdby: number
+	master_passenger: number
+	companion_passengers: string[]
 }
 
 export interface FlightCreationAttributes
@@ -22,6 +24,8 @@ export interface FlightInstance
 	from: string
 	airship_id: number
 	createdby: number
+	master_passenger: number
+	companion_passengers: string[]
 }
 
 const Flights = (sequelize: Sequelize) => {
@@ -64,6 +68,13 @@ const Flights = (sequelize: Sequelize) => {
 					key: "id",
 				},
 				allowNull: false,
+			},
+			master_passenger: {
+				type: DataTypes.INTEGER,
+				allowNull: false,
+			},
+			companion_passengers: {
+				type: DataTypes.ARRAY(DataTypes.STRING(50)),
 			},
 		},
 		{
