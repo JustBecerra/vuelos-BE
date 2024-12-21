@@ -131,7 +131,6 @@ const deleteFlightService = async (id: number) => {
 
 const putFlightService = async (flight: FlightInput) => {
 	const {
-		id,
 		launchtime,
 		arrivaltime,
 		to,
@@ -141,7 +140,11 @@ const putFlightService = async (flight: FlightInput) => {
 		companion_passengers,
 	} = flight
 	try {
-		const oldFlight = await Flights.findByPk(id)
+		const oldFlight = await Flights.findOne({
+			where: {
+				launchtime,
+			},
+		})
 
 		if (oldFlight) {
 			const airship = await Airships.findOne({
@@ -179,7 +182,7 @@ const putFlightService = async (flight: FlightInput) => {
 				},
 				{
 					where: {
-						id,
+						launchtime,
 					},
 				}
 			)
