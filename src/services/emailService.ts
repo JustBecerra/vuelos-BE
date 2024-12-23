@@ -3,8 +3,8 @@ const nodemailer = require("nodemailer")
 const transporter = nodemailer.createTransport({
 	service: "gmail",
 	auth: {
-		user: "your-email@gmail.com", // email de tangojet
-		pass: "your-app-password", // su password
+		user: process.env.EMAIL_ADDRESS, // email de tangojet
+		pass: process.env.EMAIL_PASSWORD, // su password
 	},
 })
 
@@ -19,7 +19,7 @@ async function sendEmail({
 }) {
 	try {
 		const info = await transporter.sendMail({
-			from: '"Your App" <your-email@gmail.com>', // email de tangojet
+			from: process.env.EMAIL_ADDRESS, // email de tangojet
 			to,
 			subject,
 			text,
