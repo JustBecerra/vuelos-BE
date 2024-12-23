@@ -29,6 +29,7 @@ import {
 import { ProtectRoute } from "../middleware/authMiddleware"
 import multer from "multer"
 import { deleteImage, getImages } from "../controllers/imageController"
+import { sendEmailController } from "../controllers/emailController"
 const router: Router = express.Router()
 
 //flights
@@ -59,6 +60,9 @@ router.get("/airships", getAirships)
 router.post("/airship", upload.array("images"), postAirship) //crea aeronave y sus imagenes
 router.put("/airship", upload.array("images"), putAirship)
 router.delete("/airship/:id", deleteAirship)
+
+//email
+router.post("/email", sendEmailController)
 
 //images
 router.get("/images/:id", getImages)
