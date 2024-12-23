@@ -1,4 +1,5 @@
-import { Request, Response } from "express"
+import type { Request, Response } from "express"
+import { sendEmail } from "../services/emailService"
 
 async function sendEmailController(req: Request, res: Response) {
 	try {
@@ -9,6 +10,7 @@ async function sendEmailController(req: Request, res: Response) {
 		}
 
 		await sendEmail({ to, subject, text })
+
 		res.status(200).json({ message: "Email sent successfully" })
 	} catch (error) {
 		res.status(500).json({
