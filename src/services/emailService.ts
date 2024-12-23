@@ -18,7 +18,6 @@ async function sendEmail({
 	text: string
 }) {
 	try {
-		console.log("before send email")
 		const info = await transporter.sendMail({
 			from: process.env.EMAIL_ADDRESS, // email de tangojet
 			to,
@@ -26,7 +25,6 @@ async function sendEmail({
 			text,
 		})
 
-		console.log("Email sent:", info.messageId)
 		return info
 	} catch (error) {
 		console.error("Error sending email:", error)
