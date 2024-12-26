@@ -1,4 +1,6 @@
 import nodemailer from "nodemailer"
+import db from "../config/dbConfig"
+const { Clients } = db
 
 const transporter = nodemailer.createTransport({
 	service: "gmail",
@@ -18,9 +20,18 @@ async function sendEmail({
 	text: string
 }) {
 	try {
+		const splitTo = to.split(" ")
+
+		const passengerEmailAddress = await Clients.findOne({
+			where: {
+				firstname: splitTo[0],
+				lastname: splitTo[1],
+			},
+		}).then((res) => res?.dataValues.email)
+
 		const info = await transporter.sendMail({
 			from: process.env.EMAIL_ADDRESS, // email de tangojet
-			to,
+			to: passengerEmailAddress as string,
 			subject,
 			text,
 		})
