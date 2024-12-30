@@ -3,15 +3,12 @@ const { Flights, Clients, ClientFlights } = db
 
 interface ClientInterface {
 	id: number
-	firstname: string
-	lastname: string
+	fullname: string
 	email: string
-	phonenumber: string
 	identification: string
-	typeid: string
-	title: string
-	address: string
-	company: string
+	passport: string
+	nationality: string
+	weight: string
 }
 
 const associateFlightWithClient = async (
@@ -34,28 +31,16 @@ const associateFlightWithClient = async (
 }
 
 const postClientService = async (client: ClientInterface) => {
-	const {
-		firstname,
-		lastname,
-		email,
-		phonenumber,
-		identification,
-		typeid,
-		title,
-		address,
-		company,
-	} = client
+	const { fullname, email, identification, passport, nationality, weight } =
+		client
 	try {
 		const newClient = await Clients.create({
-			firstname,
-			lastname,
+			fullname,
 			email,
-			phonenumber,
 			identification,
-			typeid,
-			title,
-			address,
-			company,
+			passport,
+			nationality,
+			weight,
 		})
 
 		if (!newClient) throw new Error("client creation went wrong")
@@ -95,15 +80,12 @@ const getClientService = async () => {
 const putClientService = async (client: ClientInterface) => {
 	const {
 		id,
-		firstname,
-		lastname,
+		fullname,
 		email,
-		phonenumber,
 		identification,
-		typeid,
-		title,
-		address,
-		company,
+		passport,
+		nationality,
+		weight,
 	} = client
 	try {
 		const oldClient = await Clients.findByPk(id)
@@ -111,15 +93,12 @@ const putClientService = async (client: ClientInterface) => {
 		if (oldClient) {
 			const clientToModify = await Clients.update(
 				{
-					firstname,
-					lastname,
+					fullname,
 					email,
-					phonenumber,
 					identification,
-					typeid,
-					title,
-					address,
-					company,
+					passport,
+					nationality,
+					weight,
 				},
 				{
 					where: {

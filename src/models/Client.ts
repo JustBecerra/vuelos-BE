@@ -3,15 +3,12 @@ import { FlightAttributes } from "./Flight"
 
 export interface ClientAttributes {
 	id: number
-	firstname: string
-	lastname: string
+	fullname: string
 	email: string
-	phonenumber: string
+	nationality: string
 	identification: string
-	typeid: string
-	title: string
-	address: string
-	company: string
+	passport: string
+	weight: string
 }
 
 export interface ClientCreationAttributes
@@ -20,15 +17,12 @@ export interface ClientCreationAttributes
 export interface ClientInstance
 	extends Model<ClientAttributes, ClientCreationAttributes> {
 	id: number
-	firstname: string
-	lastname: string
+	fullname: string
 	email: string
-	phonenumber: string
+	nationality: string
 	identification: string
-	typeid: string
-	title: string
-	address: string
-	company: string
+	passport: string
+	weight: string
 	// metodos para asociación de tablas conjuntas
 	addFlight: (flight: FlightAttributes) => Promise<void>
 	getFlights: () => Promise<FlightAttributes[]>
@@ -44,31 +38,22 @@ const Client = (sequelize: Sequelize) => {
 				primaryKey: true,
 				autoIncrement: true,
 			},
-			firstname: {
-				type: DataTypes.STRING(50),
-			},
-			lastname: {
+			fullname: {
 				type: DataTypes.STRING(50),
 			},
 			email: {
 				type: DataTypes.STRING(50),
 			},
-			phonenumber: {
+			nationality: {
 				type: DataTypes.STRING(50),
 			},
 			identification: {
 				type: DataTypes.STRING(50),
 			},
-			typeid: {
+			passport: {
 				type: DataTypes.STRING(50),
 			},
-			title: {
-				type: DataTypes.STRING(50),
-			},
-			address: {
-				type: DataTypes.STRING(50),
-			},
-			company: {
+			weight: {
 				type: DataTypes.STRING(50),
 			},
 		},

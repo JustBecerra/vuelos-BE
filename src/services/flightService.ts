@@ -82,11 +82,9 @@ const postFlightService = async (flight: FlightInput) => {
 			return "Airship is already scheduled for another flight during this time."
 		}
 
-		const FullName = master_passenger.split(" ")
 		const masterPassenger = await Clients.findOne({
 			where: {
-				firstname: FullName[0],
-				lastname: FullName[1],
+				fullname: master_passenger,
 			},
 		}).then((res) => res?.dataValues.id)
 
@@ -156,11 +154,9 @@ const putFlightService = async (flight: FlightInput) => {
 			if (!airship) return "Airship does not exist."
 
 			const airship_id = airship?.dataValues.id
-			const FullName = master_passenger.split(" ")
 			const masterPassenger = await Clients.findOne({
 				where: {
-					firstname: FullName[0],
-					lastname: FullName[1],
+					fullname: master_passenger,
 				},
 			}).then((res) => res?.dataValues.id)
 
@@ -235,9 +231,7 @@ const getFlightsService = async () => {
 					createdby: alteredData?.schedulerFound,
 					airship_name: alteredData?.airshipName,
 					master_passenger:
-						masterPassenger &&
-						masterPassenger?.dataValues.firstname +
-							masterPassenger?.dataValues.lastname,
+						masterPassenger && masterPassenger?.dataValues.fullname,
 					...rest,
 				})
 			)
