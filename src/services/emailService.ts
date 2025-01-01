@@ -20,12 +20,9 @@ async function sendEmail({
 	text: string
 }) {
 	try {
-		const splitTo = to.split(" ")
-
 		const passengerEmailAddress = await Clients.findOne({
 			where: {
-				firstname: splitTo[0],
-				lastname: splitTo[1],
+				fullname: to,
 			},
 		}).then((res) => res?.dataValues.email)
 
