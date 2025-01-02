@@ -3,7 +3,6 @@ import { DataTypes, Model, Optional, Sequelize } from "sequelize"
 export interface FlightAttributes {
 	id: number
 	launchtime: Date
-	arrivaltime: Date
 	to: string
 	from: string
 	airship_id: number
@@ -19,7 +18,6 @@ export interface FlightInstance
 	extends Model<FlightAttributes, FlightCreationAttributes> {
 	id: number
 	launchtime: Date
-	arrivaltime: Date
 	to: string
 	from: string
 	airship_id: number
@@ -38,10 +36,6 @@ const Flights = (sequelize: Sequelize) => {
 				autoIncrement: true,
 			},
 			launchtime: {
-				type: DataTypes.DATE,
-				allowNull: false,
-			},
-			arrivaltime: {
 				type: DataTypes.DATE,
 				allowNull: false,
 			},

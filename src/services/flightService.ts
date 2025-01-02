@@ -4,7 +4,6 @@ const { Flights, Schedulers, Airships, ClientFlights, Clients } = db
 interface FlightInput {
 	id: number
 	launchtime: Date
-	arrivaltime: Date
 	to: string
 	from: string
 	airship_name: string
@@ -17,7 +16,6 @@ const postFlightService = async (flight: FlightInput) => {
 	try {
 		const {
 			launchtime,
-			arrivaltime,
 			to,
 			from,
 			airship_name,
@@ -49,39 +47,6 @@ const postFlightService = async (flight: FlightInput) => {
 
 		const airship_id = airship?.dataValues.id
 
-		const overlappingFlight = await Flights.findOne({
-			where: {
-				airship_id,
-
-				[Op.or]: [
-					{
-						launchtime: {
-							[Op.between]: [launchtime, arrivaltime],
-						},
-					},
-					{
-						arrivaltime: {
-							[Op.between]: [launchtime, arrivaltime],
-						},
-					},
-					{
-						[Op.and]: [
-							{
-								launchtime: { [Op.lte]: launchtime },
-							},
-							{
-								arrivaltime: { [Op.gte]: arrivaltime },
-							},
-						],
-					},
-				],
-			},
-		})
-
-		if (overlappingFlight) {
-			return "Airship is already scheduled for another flight during this time."
-		}
-
 		const masterPassenger = await Clients.findOne({
 			where: {
 				fullname: master_passenger,
@@ -91,7 +56,6 @@ const postFlightService = async (flight: FlightInput) => {
 		if (masterPassenger) {
 			const newFlight = await Flights.create({
 				launchtime,
-				arrivaltime,
 				to,
 				from,
 				airship_id,
@@ -130,7 +94,6 @@ const deleteFlightService = async (id: number) => {
 const putFlightService = async (flight: FlightInput) => {
 	const {
 		launchtime,
-		arrivaltime,
 		to,
 		from,
 		airship_name,
@@ -163,8 +126,6 @@ const putFlightService = async (flight: FlightInput) => {
 			const flightToModify = await Flights.update(
 				{
 					launchtime: launchtime || oldFlight.dataValues.launchtime,
-					arrivaltime:
-						arrivaltime || oldFlight.dataValues.arrivaltime,
 					to: to || oldFlight.dataValues.to,
 					from: from || oldFlight.dataValues.from,
 					airship_id: airship_id || oldFlight.dataValues.airship_id,
@@ -208,7 +169,6 @@ const getFlightsService = async () => {
 		const filteredDataPromises = flights.map(async (flight: any) => {
 			const {
 				launchtime,
-				arrivaltime,
 				createdAt,
 				updatedAt,
 				createdby,
@@ -223,9 +183,6 @@ const getFlightsService = async () => {
 			return getAlteredValues(createdby, airship_id).then(
 				(alteredData) => ({
 					launchtime: new Date(launchtime).toISOString().slice(0, 16),
-					arrivaltime: new Date(arrivaltime)
-						.toISOString()
-						.slice(0, 16),
 					createdAt: new Date(createdAt).toISOString().slice(0, 16),
 					updatedAt: new Date(updatedAt).toISOString().slice(0, 16),
 					createdby: alteredData?.schedulerFound,
