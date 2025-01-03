@@ -6,6 +6,8 @@ interface FlightInput {
 	launchtime: Date
 	to: string
 	from: string
+	price_cost: number
+	price_revenue: number
 	airship_name: string
 	createdby: string
 	master_passenger: string
@@ -18,6 +20,8 @@ const postFlightService = async (flight: FlightInput) => {
 			launchtime,
 			to,
 			from,
+			price_cost,
+			price_revenue,
 			airship_name,
 			createdby,
 			master_passenger,
@@ -58,6 +62,8 @@ const postFlightService = async (flight: FlightInput) => {
 				launchtime,
 				to,
 				from,
+				price_cost,
+				price_revenue,
 				airship_id,
 				createdby: scheduler_id,
 				master_passenger: masterPassenger,
@@ -96,6 +102,8 @@ const putFlightService = async (flight: FlightInput) => {
 		launchtime,
 		to,
 		from,
+		price_cost,
+		price_revenue,
 		airship_name,
 		master_passenger,
 		companion_passengers,
@@ -128,6 +136,9 @@ const putFlightService = async (flight: FlightInput) => {
 					launchtime: launchtime || oldFlight.dataValues.launchtime,
 					to: to || oldFlight.dataValues.to,
 					from: from || oldFlight.dataValues.from,
+					price_cost: price_cost || oldFlight.dataValues.price_cost,
+					price_revenue:
+						price_revenue || oldFlight.dataValues.price_revenue,
 					airship_id: airship_id || oldFlight.dataValues.airship_id,
 					createdby: oldFlight.dataValues.createdby,
 					master_passenger:
