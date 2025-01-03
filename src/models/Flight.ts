@@ -5,6 +5,8 @@ export interface FlightAttributes {
 	launchtime: Date
 	to: string
 	from: string
+	price_cost: number
+	price_revenue: number
 	airship_id: number
 	createdby: number
 	master_passenger: number
@@ -20,6 +22,8 @@ export interface FlightInstance
 	launchtime: Date
 	to: string
 	from: string
+	price_cost: number
+	price_revenue: number
 	airship_id: number
 	createdby: number
 	master_passenger: number
@@ -45,6 +49,14 @@ const Flights = (sequelize: Sequelize) => {
 			},
 			from: {
 				type: DataTypes.STRING(50),
+				allowNull: false,
+			},
+			price_cost: {
+				type: DataTypes.INTEGER,
+				allowNull: false,
+			},
+			price_revenue: {
+				type: DataTypes.INTEGER,
 				allowNull: false,
 			},
 			airship_id: {
