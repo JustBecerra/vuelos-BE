@@ -13,7 +13,6 @@ interface FlightInput {
 	master_passenger: string
 	companion_passengers: string[]
 	phase: number
-	pslc: number
 }
 
 const postFlightService = async (flight: FlightInput) => {
@@ -28,8 +27,6 @@ const postFlightService = async (flight: FlightInput) => {
 			createdby,
 			master_passenger,
 			companion_passengers,
-			phase,
-			pslc,
 		} = flight
 
 		const scheduler = await Schedulers.findOne({
@@ -72,8 +69,8 @@ const postFlightService = async (flight: FlightInput) => {
 				createdby: scheduler_id,
 				master_passenger: masterPassenger,
 				companion_passengers,
-				phase,
-				pslc,
+				phase: 1,
+				pslc: 0,
 			})
 
 			if (!newFlight) return "Flight creation went wrong"
@@ -114,7 +111,6 @@ const putFlightService = async (flight: FlightInput) => {
 		master_passenger,
 		companion_passengers,
 		phase,
-		pslc,
 	} = flight
 	try {
 		const oldFlight = await Flights.findOne({
@@ -156,7 +152,7 @@ const putFlightService = async (flight: FlightInput) => {
 						companion_passengers ||
 						oldFlight.dataValues.companion_passengers,
 					phase: phase || oldFlight.dataValues.phase,
-					pslc: pslc || oldFlight.dataValues.pslc,
+					pslc: oldFlight.dataValues.pslc,
 				},
 				{
 					where: {
