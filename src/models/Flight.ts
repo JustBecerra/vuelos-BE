@@ -92,7 +92,6 @@ const Flights = (sequelize: Sequelize) => {
 			},
 			pslc: {
 				type: DataTypes.INTEGER,
-				allowNull: false,
 			},
 		},
 		{
