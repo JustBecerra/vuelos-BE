@@ -110,7 +110,6 @@ const putFlightService = async (flight: FlightInput) => {
 		airship_name,
 		master_passenger,
 		companion_passengers,
-		phase,
 	} = flight
 	try {
 		const oldFlight = await Flights.findOne({
@@ -151,7 +150,7 @@ const putFlightService = async (flight: FlightInput) => {
 					companion_passengers:
 						companion_passengers ||
 						oldFlight.dataValues.companion_passengers,
-					phase: phase || oldFlight.dataValues.phase,
+					phase: oldFlight.dataValues.phase,
 					pslc: oldFlight.dataValues.pslc,
 				},
 				{
