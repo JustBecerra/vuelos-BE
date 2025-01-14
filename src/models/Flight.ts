@@ -81,7 +81,6 @@ const Flights = (sequelize: Sequelize) => {
 			},
 			master_passenger: {
 				type: DataTypes.INTEGER,
-				allowNull: false,
 			},
 			companion_passengers: {
 				type: DataTypes.ARRAY(DataTypes.STRING(50)),
