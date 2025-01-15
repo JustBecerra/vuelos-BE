@@ -69,7 +69,7 @@ const postFlightService = async (flight: FlightInput) => {
 				createdby: scheduler_id,
 				master_passenger: masterPassenger,
 				companion_passengers,
-				phase: 1,
+				phase: 3,
 				pslc: 0,
 			})
 
