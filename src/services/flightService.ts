@@ -177,6 +177,32 @@ const getAlteredValues = async (createdby: string, id: number) => {
 	return { schedulerFound, airshipName }
 }
 
+const putCompletePhaseService = async ({
+	convertedID,
+	convertedPhaseNumber,
+}: {
+	convertedID: number
+	convertedPhaseNumber: number
+}) => {
+	try {
+		const modifiedFlightPhase = await Flights.update(
+			{
+				phase: convertedPhaseNumber,
+			},
+			{
+				where: {
+					id: convertedID,
+				},
+			}
+		)
+
+		return modifiedFlightPhase
+	} catch (err) {
+		console.error(err)
+		return null
+	}
+}
+
 const getFlightsService = async () => {
 	try {
 		const flights = await Flights.findAll()
@@ -268,4 +294,5 @@ export {
 	getFlightByClientIdService,
 	putFlightService,
 	deleteFlightService,
+	putCompletePhaseService,
 }
