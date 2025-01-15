@@ -6,6 +6,7 @@ import {
 	getFlightByClientId,
 	putFlight,
 	deleteFlight,
+	putCompletePhase,
 } from "../controllers/flightController"
 import {
 	postClientFlight,
@@ -39,6 +40,7 @@ router.put("/flight", putFlight)
 router.get("/flight/:id", getFlightById)
 router.get("/clientflight/:id", getFlightByClientId)
 router.delete("/flight/:id", deleteFlight)
+router.put("/flight/phase/:id/:phasenumber", putCompletePhase)
 
 //clients
 router.post("/clients/:clientId/flights/:flightId", postClientFlight)

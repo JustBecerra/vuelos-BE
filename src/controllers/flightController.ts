@@ -6,6 +6,7 @@ import {
 	getFlightByClientIdService,
 	putFlightService,
 	deleteFlightService,
+	putCompletePhaseService,
 } from "../services/flightService"
 
 const postFlight = async (req: Request, res: Response): Promise<void> => {
@@ -13,7 +14,6 @@ const postFlight = async (req: Request, res: Response): Promise<void> => {
 		const flight = await postFlightService(req.body)
 		if (typeof flight === "string") res.status(400).json({ error: flight })
 		else res.status(200).json(flight)
-		
 	} catch (error) {
 		console.error("error adding new flight", error)
 		res.status(500).json({
@@ -84,6 +84,30 @@ const getFlights = async (req: Request, res: Response): Promise<void> => {
 	}
 }
 
+const putCompletePhase = async (req: Request, res: Response): Promise<void> => {
+	try {
+		const { id, phasenumber } = req.params
+		const convertedPhaseNumber = parseInt(phasenumber)
+		const convertedID = parseInt(id)
+		const phase = await putCompletePhaseService({
+			convertedPhaseNumber,
+			convertedID,
+		})
+		if (!phase || phase.length) res.status(400)
+		res.status(200).json(phase)
+	} catch (error) {
+		console.error("error completing phase", error)
+		res.status(500).json({
+			message: "error completing phase",
+			error: {
+				name: (error as Error).name,
+				message: (error as Error).message,
+				stack: (error as Error).stack,
+			},
+		})
+	}
+}
+
 const getFlightById = async (req: Request, res: Response): Promise<void> => {
 	try {
 		const flightID = parseInt(req.params.id)
@@ -136,4 +160,5 @@ export {
 	getFlightByClientId,
 	putFlight,
 	deleteFlight,
+	putCompletePhase,
 }
