@@ -57,11 +57,9 @@ const Flights = (sequelize: Sequelize) => {
 			},
 			price_cost: {
 				type: DataTypes.INTEGER,
-				allowNull: false,
 			},
 			price_revenue: {
 				type: DataTypes.INTEGER,
-				allowNull: false,
 			},
 			airship_id: {
 				type: DataTypes.INTEGER,
@@ -69,7 +67,6 @@ const Flights = (sequelize: Sequelize) => {
 					model: "airship",
 					key: "id",
 				},
-				allowNull: false,
 			},
 			createdby: {
 				type: DataTypes.INTEGER,
