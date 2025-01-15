@@ -21,12 +21,12 @@ const postFlightService = async (flight: FlightInput) => {
 			launchtime,
 			to,
 			from,
-			price_cost,
-			price_revenue,
-			airship_name,
+			// price_cost,
+			// price_revenue,
+			// airship_name,
 			createdby,
 			master_passenger,
-			companion_passengers,
+			// companion_passengers,
 		} = flight
 
 		const scheduler = await Schedulers.findOne({
@@ -42,15 +42,15 @@ const postFlightService = async (flight: FlightInput) => {
 			return "Scheduler is not an admin."
 		}
 
-		const airship = await Airships.findOne({
-			where: {
-				title: airship_name,
-			},
-		})
+		// const airship = await Airships.findOne({
+		// 	where: {
+		// 		title: airship_name,
+		// 	},
+		// })
 
-		if (!airship) return "Airship does not exist."
+		// if (!airship) return "Airship does not exist."
 
-		const airship_id = airship?.dataValues.id
+		// const airship_id = airship?.dataValues.id
 
 		const masterPassenger = await Clients.findOne({
 			where: {
@@ -63,12 +63,12 @@ const postFlightService = async (flight: FlightInput) => {
 				launchtime,
 				to,
 				from,
-				price_cost,
-				price_revenue,
-				airship_id,
+				price_cost: 0,
+				price_revenue: 0,
+				airship_id: 32,
 				createdby: scheduler_id,
 				master_passenger: masterPassenger,
-				companion_passengers,
+				companion_passengers: [],
 				phase: 3,
 				pslc: 0,
 			})
