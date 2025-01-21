@@ -30,9 +30,18 @@ const getAirships = async (req: Request, res: Response) => {
 const postAirship = async (req: Request, res: Response): Promise<void> => {
 	try {
 		const airshipData = req.body
-		const files = req.files as Express.Multer.File[]
+		const files = req.files as {
+			[fieldname: string]: Express.Multer.File[]
+		}
 
-		const airship = await postAirshipService(airshipData, files)
+		const portraitFile = files["Portrait"]?.[0] || null
+		const genericFiles = files["Generic"] || []
+
+		const airship = await postAirshipService(
+			airshipData,
+			genericFiles,
+			portraitFile
+		)
 
 		if (!airship) {
 			res.status(400).json({ error: "no airship was added" })
