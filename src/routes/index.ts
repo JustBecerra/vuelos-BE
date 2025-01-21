@@ -63,11 +63,11 @@ router.get("/airships", getAirships)
 router.post(
 	"/airship",
 	upload.fields([
-	  { name: "Portrait", maxCount: 1 },
-	  { name: "Generic", maxCount: 10 },
+		{ name: "portrait", maxCount: 1 },
+		{ name: "generic", maxCount: 10 },
 	]),
 	postAirship
-  ); //crea aeronave y sus imagenes
+) //crea aeronave y sus imagenes
 router.put("/airship", upload.array("images"), putAirship)
 router.delete("/airship/:id", deleteAirship)
 

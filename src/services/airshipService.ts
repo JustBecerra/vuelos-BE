@@ -56,11 +56,18 @@ const postAirshipService = async (
 		})
 
 		if (portraitFile) {
-			await Images.create({
-				image: portraitFile.buffer,
-				airship_id: airshipID,
-				local_path: "",
-			})
+			try {
+				await Images.create({
+					image: portraitFile.buffer,
+					airship_id: airshipID,
+					typeof: "Portrait",
+				})
+			} catch (error) {
+				console.error(
+					`Error uploading file ${portraitFile.originalname}:`,
+					error
+				)
+			}
 		}
 
 		// Ensure the upload directory exists on the Render server
@@ -70,7 +77,7 @@ const postAirshipService = async (
 				await Images.create({
 					image: file.buffer, // URL relative to your static file server
 					airship_id: airshipID,
-					local_path: "", // Path on the server
+					typeof: "Generic", // Path on the server
 				})
 			} catch (error) {
 				console.error(
@@ -111,7 +118,7 @@ const putAirshipService = async (
 					await Images.create({
 						image: file.buffer,
 						airship_id: Airship?.dataValues.id as number,
-						local_path: "",
+						typeof: "Generic",
 					})
 				} catch (error) {
 					console.error("Error processing file:", error)

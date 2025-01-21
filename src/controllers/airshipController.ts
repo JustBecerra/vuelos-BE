@@ -34,8 +34,8 @@ const postAirship = async (req: Request, res: Response): Promise<void> => {
 			[fieldname: string]: Express.Multer.File[]
 		}
 
-		const portraitFile = files["Portrait"]?.[0] || null
-		const genericFiles = files["Generic"] || []
+		const portraitFile = files.portrait[0] || null
+		const genericFiles = files.generic || []
 
 		const airship = await postAirshipService(
 			airshipData,
