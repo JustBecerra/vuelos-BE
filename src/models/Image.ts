@@ -3,7 +3,7 @@ import { DataTypes, Model, Sequelize } from "sequelize"
 export interface ImageAttributes {
 	id?: number
 	image: Buffer
-	local_path: string
+	typeof: string
 	airship_id: number
 }
 
@@ -20,7 +20,7 @@ const image = (sequelize: Sequelize) => {
 				type: DataTypes.BLOB,
 				allowNull: false,
 			},
-			local_path: {
+			typeof: {
 				type: DataTypes.TEXT,
 				allowNull: true,
 			},
