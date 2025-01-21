@@ -26,7 +26,8 @@ const getAirshipsService = async () => {
 
 const postAirshipService = async (
 	airship: airshipProps,
-	images: Express.Multer.File[]
+	genericFiles: Express.Multer.File[],
+	portraitFile: Express.Multer.File
 ) => {
 	const { title, status, pricepermile, seats, size } = airship
 
@@ -44,7 +45,7 @@ const postAirshipService = async (
 
 		const airshipID = newAirship.dataValues.id
 
-		const filteredImages = images.filter((value, index, self) => {
+		const filteredImages = genericFiles.filter((value, index, self) => {
 			const originalName = value.originalname.trim().toLowerCase()
 			const firstOccurrenceIndex = self.findIndex(
 				(item) =>
@@ -53,6 +54,14 @@ const postAirshipService = async (
 
 			return firstOccurrenceIndex === index // Keep only the first occurrence
 		})
+
+		if (portraitFile) {
+			await Images.create({
+				image: portraitFile.buffer,
+				airship_id: airshipID,
+				local_path: "",
+			})
+		}
 
 		// Ensure the upload directory exists on the Render server
 		for (const file of filteredImages) {
