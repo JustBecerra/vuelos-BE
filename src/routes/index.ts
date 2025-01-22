@@ -68,7 +68,14 @@ router.post(
 	]),
 	postAirship
 ) //crea aeronave y sus imagenes
-router.put("/airship", upload.array("images"), putAirship)
+router.put(
+	"/airship",
+	upload.fields([
+		{ name: "portrait", maxCount: 1 },
+		{ name: "generic", maxCount: 10 },
+	]),
+	putAirship
+)
 router.delete("/airship/:id", deleteAirship)
 
 //email
