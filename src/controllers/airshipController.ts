@@ -63,8 +63,17 @@ const postAirship = async (req: Request, res: Response): Promise<void> => {
 const putAirship = async (req: Request, res: Response) => {
 	try {
 		const airshipData = req.body
-		const files = req.files as Express.Multer.File[]
-		const airship = await putAirshipService(airshipData, files)
+		const files = req.files as {
+			[fieldname: string]: Express.Multer.File[]
+		}
+
+		const portraitFile = files.portrait[0] || null
+		const genericFiles = files.generic || []
+		const airship = await putAirshipService(
+			airshipData,
+			portraitFile,
+			genericFiles
+		)
 
 		if (airship === 0) {
 			res.status(400).json({ message: "Airship update failed" })

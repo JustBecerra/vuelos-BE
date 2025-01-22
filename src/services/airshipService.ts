@@ -97,7 +97,8 @@ const postAirshipService = async (
 
 const putAirshipService = async (
 	airship: airshipProps,
-	images: Express.Multer.File[]
+	portraitFile: Express.Multer.File,
+	genericFiles: Express.Multer.File[]
 ) => {
 	const { id, title, status, pricepermile, seats, size } = airship
 	try {
@@ -107,22 +108,56 @@ const putAirshipService = async (
 			},
 		})
 
-		if (images) {
-			await Images.destroy({
-				where: {
-					airship_id: Airship?.dataValues.id as number,
-				},
-			})
-			for (const file of images) {
-				try {
-					await Images.create({
+		const filteredImages = genericFiles.filter((value, index, self) => {
+			const originalName = value.originalname.trim().toLowerCase()
+			const firstOccurrenceIndex = self.findIndex(
+				(item) =>
+					item.originalname.trim().toLowerCase() === originalName
+			)
+
+			return firstOccurrenceIndex === index
+		})
+
+		for (const file of filteredImages) {
+			try {
+				await Images.update(
+					{
 						image: file.buffer,
-						airship_id: Airship?.dataValues.id as number,
-						typeof: "Generic",
-					})
-				} catch (error) {
-					console.error("Error processing file:", error)
-				}
+					},
+					{
+						where: {
+							airship_id: id,
+							typeof: "Generic",
+						},
+					}
+				)
+			} catch (error) {
+				console.error(
+					`Error uploading file ${file.originalname}:`,
+					error
+				)
+				continue
+			}
+		}
+
+		if (portraitFile) {
+			try {
+				await Images.update(
+					{
+						image: portraitFile.buffer,
+					},
+					{
+						where: {
+							airship_id: id,
+							typeof: "Portrait",
+						},
+					}
+				)
+			} catch (error) {
+				console.error(
+					`Error uploading file ${portraitFile.originalname}:`,
+					error
+				)
 			}
 		}
 
