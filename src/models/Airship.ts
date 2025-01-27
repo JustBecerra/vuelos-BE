@@ -4,7 +4,7 @@ export interface AirshipAttributes {
 	id: number
 	title: string
 	status: string
-	pricepermile: number
+	description: string
 	seats: number
 	size: string
 }
@@ -17,7 +17,7 @@ export interface AirshipInstance
 	id: number
 	title: string
 	status: string
-	pricepermile: number
+	description: string
 	seats: number
 	size: string
 }
@@ -37,8 +37,8 @@ const Airship = (sequelize: Sequelize) => {
 			status: {
 				type: DataTypes.STRING(50),
 			},
-			pricepermile: {
-				type: DataTypes.DOUBLE,
+			description: {
+				type: DataTypes.TEXT,
 			},
 			seats: {
 				type: DataTypes.INTEGER,

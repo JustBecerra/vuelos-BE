@@ -6,7 +6,7 @@ interface airshipProps {
 	id: number
 	title: string
 	status: string
-	pricepermile: number
+	description: string
 	seats: number
 	size: string
 	images: File[]
@@ -50,13 +50,13 @@ const postAirshipService = async (
 	genericFiles: Express.Multer.File[],
 	portraitFile: Express.Multer.File
 ) => {
-	const { title, status, pricepermile, seats, size } = airship
+	const { title, status, description, seats, size } = airship
 
 	try {
 		const newAirship = await Airships.create({
 			title,
 			status,
-			pricepermile,
+			description,
 			seats,
 			size,
 		})
@@ -118,7 +118,7 @@ const putAirshipService = async (
 	portraitFile: Express.Multer.File,
 	genericFiles: Express.Multer.File[]
 ) => {
-	const { id, title, status, pricepermile, seats, size } = airship
+	const { id, title, status, description, seats, size } = airship
 	try {
 		const Airship = await Airships.findOne({
 			where: {
@@ -184,8 +184,7 @@ const putAirshipService = async (
 				{
 					title: title || Airship.dataValues.title,
 					status: status || Airship.dataValues.status,
-					pricepermile:
-						pricepermile || Airship.dataValues.pricepermile,
+					description: description || Airship.dataValues.description,
 					seats: seats || Airship.dataValues.seats,
 					size: size || Airship.dataValues.size,
 				},
