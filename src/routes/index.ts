@@ -60,7 +60,7 @@ router.post("/scheduler/register", registerScheduler)
 const upload = multer({ storage: multer.memoryStorage() })
 
 router.get("/airships", getAirships)
-router.get("/airships/invoice", getAirshipsById)
+router.post("/airships/invoice", getAirshipsById)
 router.post(
 	"/airship",
 	upload.fields([
