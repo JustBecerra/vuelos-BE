@@ -1,4 +1,5 @@
 import db from "../config/dbConfig"
+import { Op } from "sequelize"
 const { Airships, Images } = db
 
 interface airshipProps {
@@ -24,6 +25,26 @@ const getAirshipsService = async () => {
 	}
 }
 
+const getAirshipsInvoiceService = async (IDs: string[]) => {
+	try {
+		const convertedIDs = IDs.map((id) => parseInt(id, 10))
+		const airships = await Airships.findAll({
+			where: {
+				id: {
+					[Op.in]: convertedIDs,
+				},
+			},
+		})
+
+		if (!airships) throw new Error("There are no airships available")
+
+		return airships
+	} catch (err) {
+		console.error(err)
+		return null
+	}
+}
+
 const postAirshipService = async (
 	airship: airshipProps,
 	genericFiles: Express.Multer.File[],
@@ -32,7 +53,6 @@ const postAirshipService = async (
 	const { title, status, pricepermile, seats, size } = airship
 
 	try {
-		// Create a new airship entry in the database
 		const newAirship = await Airships.create({
 			title,
 			status,
@@ -52,7 +72,7 @@ const postAirshipService = async (
 					item.originalname.trim().toLowerCase() === originalName
 			)
 
-			return firstOccurrenceIndex === index // Keep only the first occurrence
+			return firstOccurrenceIndex === index
 		})
 
 		if (portraitFile) {
@@ -70,14 +90,12 @@ const postAirshipService = async (
 			}
 		}
 
-		// Ensure the upload directory exists on the Render server
 		for (const file of filteredImages) {
 			try {
-				// Store the file path in the database
 				await Images.create({
-					image: file.buffer, // URL relative to your static file server
+					image: file.buffer,
 					airship_id: airshipID,
-					typeof: "Generic", // Path on the server
+					typeof: "Generic",
 				})
 			} catch (error) {
 				console.error(
@@ -210,4 +228,5 @@ export {
 	postAirshipService,
 	putAirshipService,
 	deleteAirshipService,
+	getAirshipsInvoiceService,
 }

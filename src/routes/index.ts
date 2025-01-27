@@ -26,6 +26,7 @@ import {
 	postAirship,
 	putAirship,
 	deleteAirship,
+	getAirshipsById,
 } from "../controllers/airshipController"
 import { ProtectRoute } from "../middleware/authMiddleware"
 import multer from "multer"
@@ -59,7 +60,7 @@ router.post("/scheduler/register", registerScheduler)
 const upload = multer({ storage: multer.memoryStorage() })
 
 router.get("/airships", getAirships)
-
+router.get("/airships/invoice", getAirshipsById)
 router.post(
 	"/airship",
 	upload.fields([

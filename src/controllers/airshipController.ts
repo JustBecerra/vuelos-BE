@@ -4,8 +4,8 @@ import {
 	postAirshipService,
 	putAirshipService,
 	deleteAirshipService,
+	getAirshipsInvoiceService,
 } from "../services/airshipService"
-
 
 const getAirships = async (req: Request, res: Response) => {
 	try {
@@ -17,7 +17,28 @@ const getAirships = async (req: Request, res: Response) => {
 		res.status(200).json(airships)
 	} catch (error) {
 		res.status(500).json({
-			message: "Error getting clients",
+			message: "Error getting Airships",
+			error: {
+				name: (error as Error).name,
+				message: (error as Error).message,
+				stack: (error as Error).stack,
+			},
+		})
+	}
+}
+
+const getAirshipsById = async (req: Request, res: Response) => {
+	try {
+		const { IDs } = req.body
+		const airships = await getAirshipsInvoiceService(IDs)
+
+		if (!airships) {
+			res.status(204)
+		}
+		res.status(200).json(airships)
+	} catch (error) {
+		res.status(500).json({
+			message: "Error getting Airships",
 			error: {
 				name: (error as Error).name,
 				message: (error as Error).message,
@@ -114,4 +135,4 @@ const deleteAirship = async (req: Request, res: Response) => {
 	}
 }
 
-export { getAirships, postAirship, putAirship, deleteAirship }
+export { getAirships, postAirship, putAirship, deleteAirship, getAirshipsById }
