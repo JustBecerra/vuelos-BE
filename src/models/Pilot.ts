@@ -1,7 +1,10 @@
-import { DataTypes, Model, Sequelize } from "sequelize"
+import { DataTypes, Model, Optional, Sequelize } from "sequelize"
+
+export interface FlightCreationAttributes
+	extends Optional<PilotAttributes, "id"> {}
 
 export interface PilotAttributes {
-	id: number
+	id: FlightCreationAttributes
 	fullname: string
 	phonenumber: number
 	weight: string
@@ -13,7 +16,7 @@ export interface PilotAttributes {
 }
 
 const Pilot = (sequelize: Sequelize) => {
-	const Pilots = sequelize.define<Model<PilotAttributes>>(
+	const Pilots = sequelize.define<Model<FlightCreationAttributes>>(
 		"pilot",
 		{
 			id: {
