@@ -67,4 +67,15 @@ const postPilotService = async (Pilot: PilotInterface) => {
 	}
 }
 
-export { getPilotsService, postPilotService }
+const deletePilotService = async (id: string) => {
+	try {
+		const pilot = await Pilots.destroy({ where: { id } })
+		if (pilot === 0) return "Pilot does not exist"
+		return pilot
+	} catch (err) {
+		console.error(err)
+		return null
+	}
+}
+
+export { getPilotsService, postPilotService, deletePilotService }
