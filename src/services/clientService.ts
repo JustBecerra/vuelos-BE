@@ -9,6 +9,7 @@ interface ClientInterface {
 	passport: string
 	nationality: string
 	weight: string
+	title: string
 }
 
 const associateFlightWithClient = async (
@@ -31,8 +32,15 @@ const associateFlightWithClient = async (
 }
 
 const postClientService = async (client: ClientInterface) => {
-	const { fullname, email, identification, passport, nationality, weight } =
-		client
+	const {
+		fullname,
+		email,
+		identification,
+		passport,
+		nationality,
+		weight,
+		title,
+	} = client
 	try {
 		const newClient = await Clients.create({
 			fullname,
@@ -41,6 +49,7 @@ const postClientService = async (client: ClientInterface) => {
 			passport,
 			nationality,
 			weight,
+			title,
 		})
 
 		if (!newClient) throw new Error("client creation went wrong")
