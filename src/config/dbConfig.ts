@@ -6,6 +6,7 @@ import ConnectionsModel from "../models/Connection"
 import ClientsModel from "../models/Client"
 import ImagesModel from "../models/Image"
 import ClientFlightsModel from "../models/ClientFlights"
+import Pilot from "../models/Pilot"
 require("dotenv").config()
 
 const sequelize = new Sequelize(`${process.env.DATABASE_URL}`, {
@@ -18,7 +19,7 @@ const sequelize = new Sequelize(`${process.env.DATABASE_URL}`, {
 		},
 	},
 })
-  
+
 const Schedulers = SchedulersModel(sequelize)
 const Flights = FlightsModel(sequelize)
 const Airships = AirshipsModel(sequelize)
@@ -26,6 +27,7 @@ const Connections = ConnectionsModel(sequelize)
 const Clients = ClientsModel(sequelize)
 const Images = ImagesModel(sequelize)
 const ClientFlights = ClientFlightsModel(sequelize)
+const Pilots = Pilot(sequelize)
 
 Schedulers.hasMany(Flights, { foreignKey: "createdby", as: "flights" })
 Flights.hasMany(Connections, { foreignKey: "flight_id", as: "connections" })
@@ -53,5 +55,6 @@ export default {
 	Clients,
 	ClientFlights,
 	Images,
+	Pilots,
 	conn: sequelize,
 }
