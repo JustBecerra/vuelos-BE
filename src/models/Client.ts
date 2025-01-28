@@ -9,6 +9,7 @@ export interface ClientAttributes {
 	identification: string
 	passport: string
 	weight: string
+	title: string
 }
 
 export interface ClientCreationAttributes
@@ -23,6 +24,7 @@ export interface ClientInstance
 	identification: string
 	passport: string
 	weight: string
+	title: string
 	// metodos para asociación de tablas conjuntas
 	addFlight: (flight: FlightAttributes) => Promise<void>
 	getFlights: () => Promise<FlightAttributes[]>
@@ -54,6 +56,9 @@ const Client = (sequelize: Sequelize) => {
 				type: DataTypes.STRING(50),
 			},
 			weight: {
+				type: DataTypes.STRING(50),
+			},
+			title: {
 				type: DataTypes.STRING(50),
 			},
 		},
