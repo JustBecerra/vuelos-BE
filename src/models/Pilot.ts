@@ -48,7 +48,7 @@ const Pilot = (sequelize: Sequelize) => {
 			},
 		},
 		{
-			tableName: "scheduler",
+			tableName: "pilot",
 			timestamps: false,
 		}
 	)
