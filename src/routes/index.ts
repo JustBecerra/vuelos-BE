@@ -32,7 +32,7 @@ import { ProtectRoute } from "../middleware/authMiddleware"
 import multer from "multer"
 import { deleteImage, getImages } from "../controllers/imageController"
 import { sendEmailController } from "../controllers/emailController"
-import { getPilots } from "../controllers/pilotController"
+import { getPilots, postPilot } from "../controllers/pilotController"
 const router: Router = express.Router()
 
 //flights
@@ -89,5 +89,6 @@ router.delete("/image/:id", deleteImage)
 
 //pilots
 router.get("/pilots", getPilots)
+router.post("/pilot", postPilot)
 
 export default router
