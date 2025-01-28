@@ -6,6 +6,10 @@ const getImages = async (req: Request, res: Response) => {
 		const id = req.params.id
 		const images = await getImagesService(id)
 
+		if (images === "Airship does not exist") {
+			res.status(400).json({ message: "Airship does not exist" })
+		}
+
 		if (images && images.length === 0) {
 			res.status(400)
 		}
