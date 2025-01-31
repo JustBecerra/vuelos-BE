@@ -46,12 +46,13 @@ const postClientService = async (client: ClientInterface) => {
 	try {
 		const newClient = await Clients.create({
 			fullname,
-			email: email.length > 0 ? email : "",
-			identification: identification.length > 0 ? identification : "",
-			passport: passport.length > 0 ? passport : "",
-			nationality: nationality.length > 0 ? nationality : "",
-			weight: weight.length > 0 ? weight : "",
-			title: title.length > 0 ? title : "",
+			email: email.length > 0 ? email : "TBD",
+			identification: identification.length > 0 ? identification : "TBD",
+			passport: passport.length > 0 ? passport : "TBD",
+			nationality:
+				nationality !== "Select an option" ? nationality : "TBD",
+			weight: weight.length > 0 ? weight : "TBD",
+			title: title.length > 0 ? title : "TBD",
 			date_of_birth: date_of_birth ? date_of_birth : new Date(),
 		})
 
