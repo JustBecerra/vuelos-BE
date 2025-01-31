@@ -10,6 +10,7 @@ interface ClientInterface {
 	nationality: string
 	weight: string
 	title: string
+	date_of_birth: Date
 }
 
 const associateFlightWithClient = async (
@@ -40,16 +41,18 @@ const postClientService = async (client: ClientInterface) => {
 		nationality,
 		weight,
 		title,
+		date_of_birth,
 	} = client
 	try {
 		const newClient = await Clients.create({
 			fullname,
-			email,
-			identification,
-			passport,
-			nationality,
-			weight,
-			title,
+			email: email.length > 0 ? email : "",
+			identification: identification.length > 0 ? identification : "",
+			passport: passport.length > 0 ? passport : "",
+			nationality: nationality.length > 0 ? nationality : "",
+			weight: weight.length > 0 ? weight : "",
+			title: title.length > 0 ? title : "",
+			date_of_birth: date_of_birth ? date_of_birth : new Date(),
 		})
 
 		if (!newClient) throw new Error("client creation went wrong")
@@ -95,6 +98,7 @@ const putClientService = async (client: ClientInterface) => {
 		passport,
 		nationality,
 		weight,
+		date_of_birth,
 	} = client
 	try {
 		const oldClient = await Clients.findByPk(id)
@@ -102,12 +106,19 @@ const putClientService = async (client: ClientInterface) => {
 		if (oldClient) {
 			const clientToModify = await Clients.update(
 				{
-					fullname,
-					email,
-					identification,
-					passport,
-					nationality,
-					weight,
+					fullname: fullname ? fullname : oldClient.fullname,
+					email: email ? email : oldClient.email,
+					identification: identification
+						? identification
+						: oldClient.identification,
+					passport: passport ? passport : oldClient.passport,
+					nationality: nationality
+						? nationality
+						: oldClient.nationality,
+					weight: weight ? weight : oldClient.weight,
+					date_of_birth: date_of_birth
+						? date_of_birth
+						: oldClient.date_of_birth,
 				},
 				{
 					where: {
