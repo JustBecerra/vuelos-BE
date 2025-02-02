@@ -1,3 +1,4 @@
+import sharp from "sharp"
 import db from "../config/dbConfig"
 const { Images, Airships } = db
 
@@ -17,7 +18,22 @@ const getImagesService = async (id: string) => {
 			},
 		})
 
-		return images
+		const convertedImages = await Promise.all(
+			images.map(async (image) => {
+				const newImage = (
+					await sharp(image.dataValues.image).png().toBuffer()
+				).toString("base64")
+				return {
+					...image,
+					dataValues: {
+						...image.dataValues,
+						image: `data:image/png;base64,${newImage}`,
+					},
+				}
+			})
+		)
+
+		return convertedImages
 	} catch (err) {
 		console.error(err)
 		return null
