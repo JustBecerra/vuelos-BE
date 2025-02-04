@@ -25,12 +25,12 @@ async function sendEmail({
 				fullname: to,
 			},
 		}).then((res) => res?.dataValues.email)
-
+		const html = text
 		const info = await transporter.sendMail({
 			from: process.env.EMAIL_ADDRESS, // email de tangojet
 			to: passengerEmailAddress as string,
 			subject,
-			text,
+			html: html,
 		})
 
 		return info
