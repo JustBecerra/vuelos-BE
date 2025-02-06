@@ -7,6 +7,7 @@ import {
 	putFlightService,
 	deleteFlightService,
 	putCompletePhaseService,
+	putConfirmQuoteService,
 } from "../services/flightService"
 
 const postFlight = async (req: Request, res: Response): Promise<void> => {
@@ -108,6 +109,26 @@ const putCompletePhase = async (req: Request, res: Response): Promise<void> => {
 	}
 }
 
+const putConfirmQuote = async (req: Request, res: Response): Promise<void> => {
+	try {
+		const confirmation = await putConfirmQuoteService(req.body)
+
+		if (!confirmation) res.status(400)
+
+		res.status(200)
+	} catch (error) {
+		console.error("error confirming quote", error)
+		res.status(500).json({
+			message: "error confirming quote",
+			error: {
+				name: (error as Error).name,
+				message: (error as Error).message,
+				stack: (error as Error).stack,
+			},
+		})
+	}
+}
+
 const getFlightById = async (req: Request, res: Response): Promise<void> => {
 	try {
 		const flightID = parseInt(req.params.id)
@@ -161,4 +182,5 @@ export {
 	putFlight,
 	deleteFlight,
 	putCompletePhase,
+	putConfirmQuote,
 }

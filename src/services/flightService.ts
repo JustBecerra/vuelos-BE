@@ -15,6 +15,13 @@ interface FlightInput {
 	phase: number
 }
 
+interface confirmationProps {
+	airship_id: number
+	price_revenue: number
+	price_cost: number
+	flight_id: number
+}
+
 const postFlightService = async (flight: FlightInput) => {
 	try {
 		const {
@@ -287,6 +294,34 @@ const getFlightByClientIdService = async (clientID: number) => {
 	}
 }
 
+const putConfirmQuoteService = async (data: confirmationProps) => {
+	try {
+		const { airship_id, price_revenue, price_cost, flight_id } = data
+
+		const flight = await Flights.findByPk(flight_id)
+
+		if (!flight) return "Flight does not exist"
+
+		const updatedFlight = await Flights.update(
+			{
+				airship_id,
+				price_revenue,
+				price_cost,
+			},
+			{
+				where: {
+					id: flight_id,
+				},
+			}
+		)
+
+		return updatedFlight
+	} catch (err) {
+		console.error(err)
+		return err
+	}
+}
+
 export {
 	postFlightService,
 	getFlightsService,
@@ -295,4 +330,5 @@ export {
 	putFlightService,
 	deleteFlightService,
 	putCompletePhaseService,
+	putConfirmQuoteService,
 }
