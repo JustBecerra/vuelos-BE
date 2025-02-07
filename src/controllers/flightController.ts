@@ -115,7 +115,7 @@ const putConfirmQuote = async (req: Request, res: Response): Promise<void> => {
 
 		if (!confirmation) res.status(400)
 
-		res.status(200)
+		res.status(200).json(confirmation)
 	} catch (error) {
 		console.error("error confirming quote", error)
 		res.status(500).json({
