@@ -13,6 +13,8 @@ export interface FlightAttributes {
 	companion_passengers: string[]
 	phase: number
 	pslc: number
+	type_of: string
+	associated_to: string
 }
 
 export interface FlightCreationAttributes
@@ -32,6 +34,8 @@ export interface FlightInstance
 	companion_passengers: string[]
 	phase: number
 	pslc: number
+	type_of: string
+	associated_to: string
 }
 
 const Flights = (sequelize: Sequelize) => {
@@ -88,6 +92,12 @@ const Flights = (sequelize: Sequelize) => {
 			},
 			pslc: {
 				type: DataTypes.INTEGER,
+			},
+			type_of: {
+				type: DataTypes.STRING,
+			},
+			associated_to: {
+				type: DataTypes.STRING,
 			},
 		},
 		{

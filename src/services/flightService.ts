@@ -13,6 +13,8 @@ interface FlightInput {
 	master_passenger: string
 	companion_passengers: string[]
 	phase: number
+	type_of: string
+	associated_to: string
 }
 
 interface confirmationProps {
@@ -28,12 +30,10 @@ const postFlightService = async (flight: FlightInput) => {
 			launchtime,
 			to,
 			from,
-			// price_cost,
-			// price_revenue,
-			// airship_name,
 			createdby,
 			master_passenger,
-			// companion_passengers,
+			associated_to,
+			type_of,
 		} = flight
 
 		const scheduler = await Schedulers.findOne({
@@ -48,16 +48,6 @@ const postFlightService = async (flight: FlightInput) => {
 		if (scheduler.dataValues.role !== "admin") {
 			return "Scheduler is not an admin."
 		}
-
-		// const airship = await Airships.findOne({
-		// 	where: {
-		// 		title: airship_name,
-		// 	},
-		// })
-
-		// if (!airship) return "Airship does not exist."
-
-		// const airship_id = airship?.dataValues.id
 
 		const masterPassenger = await Clients.findOne({
 			where: {
@@ -78,6 +68,8 @@ const postFlightService = async (flight: FlightInput) => {
 				companion_passengers: [],
 				phase: 3,
 				pslc: 0,
+				type_of: type_of || "initial",
+				associated_to: associated_to || "",
 			})
 
 			if (!newFlight) return "Flight creation went wrong"
@@ -117,6 +109,8 @@ const putFlightService = async (flight: FlightInput) => {
 		airship_name,
 		master_passenger,
 		companion_passengers,
+		type_of,
+		associated_to,
 	} = flight
 	try {
 		const oldFlight = await Flights.findOne({
@@ -159,6 +153,9 @@ const putFlightService = async (flight: FlightInput) => {
 						oldFlight.dataValues.companion_passengers,
 					phase: oldFlight.dataValues.phase,
 					pslc: oldFlight.dataValues.pslc,
+					type_of: type_of || oldFlight.dataValues.type_of,
+					associated_to:
+						associated_to || oldFlight.dataValues.associated_to,
 				},
 				{
 					where: {
