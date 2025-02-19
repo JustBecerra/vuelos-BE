@@ -11,7 +11,7 @@ interface FlightInput {
 	airship_name: string
 	createdby: string
 	master_passenger: string
-	companion_passengers: string[]
+	companion_passengers: string
 	phase: number
 	type_of: string
 	associated_to: string
@@ -118,7 +118,7 @@ const putFlightService = async (flight: FlightInput) => {
 				launchtime,
 			},
 		})
-
+		const parsedCompanionPassengers = JSON.parse(companion_passengers)
 		if (oldFlight) {
 			const airship = await Airships.findOne({
 				where: {
@@ -149,7 +149,7 @@ const putFlightService = async (flight: FlightInput) => {
 						masterPassenger ||
 						oldFlight.dataValues.master_passenger,
 					companion_passengers:
-						companion_passengers ||
+						parsedCompanionPassengers ||
 						oldFlight.dataValues.companion_passengers,
 					phase: oldFlight.dataValues.phase,
 					pslc: oldFlight.dataValues.pslc,
