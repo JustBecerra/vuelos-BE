@@ -81,6 +81,7 @@ const postAirshipService = async (
 					image: portraitFile.buffer,
 					airship_id: airshipID,
 					typeof: "Portrait",
+					original_name: portraitFile.originalname,
 				})
 			} catch (error) {
 				console.error(
@@ -96,6 +97,7 @@ const postAirshipService = async (
 					image: file.buffer,
 					airship_id: airshipID,
 					typeof: "Generic",
+					original_name: file.originalname,
 				})
 			} catch (error) {
 				console.error(
