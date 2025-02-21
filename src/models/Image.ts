@@ -5,6 +5,7 @@ export interface ImageAttributes {
 	image: Buffer
 	typeof: string
 	airship_id: number
+	original_name: string
 }
 
 const image = (sequelize: Sequelize) => {
@@ -27,6 +28,9 @@ const image = (sequelize: Sequelize) => {
 			airship_id: {
 				type: DataTypes.INTEGER,
 				allowNull: false,
+			},
+			original_name: {
+				type: DataTypes.TEXT,
 			},
 		},
 		{
