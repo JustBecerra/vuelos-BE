@@ -140,9 +140,10 @@ const putAirshipService = async (
 
 		for (const file of filteredImages) {
 			try {
-				await Images.update(
+				const updatedGeneric = await Images.update(
 					{
 						image: file.buffer,
+						original_name: file.originalname,
 					},
 					{
 						where: {
@@ -151,6 +152,15 @@ const putAirshipService = async (
 						},
 					}
 				)
+
+				if (updatedGeneric[0] === 0) {
+					await Images.create({
+						image: file.buffer,
+						airship_id: id,
+						typeof: "Portrait",
+						original_name: file.originalname,
+					})
+				}
 			} catch (error) {
 				console.error(
 					`Error uploading file ${file.originalname}:`,
@@ -162,9 +172,10 @@ const putAirshipService = async (
 
 		if (portraitFile) {
 			try {
-				await Images.update(
+				const updatedPortrait = await Images.update(
 					{
 						image: portraitFile.buffer,
+						original_name: portraitFile.originalname,
 					},
 					{
 						where: {
@@ -173,6 +184,14 @@ const putAirshipService = async (
 						},
 					}
 				)
+				if (updatedPortrait[0] === 0) {
+					await Images.create({
+						image: portraitFile.buffer,
+						airship_id: id,
+						typeof: "Portrait",
+						original_name: portraitFile.originalname,
+					})
+				}
 			} catch (error) {
 				console.error(
 					`Error uploading file ${portraitFile.originalname}:`,
