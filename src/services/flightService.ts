@@ -101,6 +101,7 @@ const deleteFlightService = async (id: number) => {
 
 const putFlightService = async (flight: FlightInput) => {
 	const {
+		id,
 		launchtime,
 		to,
 		from,
@@ -115,7 +116,7 @@ const putFlightService = async (flight: FlightInput) => {
 	try {
 		const oldFlight = await Flights.findOne({
 			where: {
-				launchtime,
+				id,
 			},
 		})
 		const parsedCompanionPassengers = JSON.parse(companion_passengers)
@@ -159,7 +160,7 @@ const putFlightService = async (flight: FlightInput) => {
 				},
 				{
 					where: {
-						launchtime,
+						id,
 					},
 				}
 			)
