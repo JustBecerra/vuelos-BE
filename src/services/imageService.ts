@@ -24,7 +24,6 @@ const getImagesService = async (id: string) => {
 					await sharp(image.dataValues.image).png().toBuffer()
 				).toString("base64")
 				return {
-					...image,
 					dataValues: {
 						...image.dataValues,
 						image: `data:image/png;base64,${newImage}`,
