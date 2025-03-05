@@ -3,6 +3,7 @@ import { DataTypes, Model, Optional, Sequelize } from "sequelize"
 export interface FlightAttributes {
 	id: number
 	launchtime: Date
+	arrivaltime: Date
 	to: string
 	from: string
 	price_cost: number
@@ -12,7 +13,6 @@ export interface FlightAttributes {
 	master_passenger: number
 	companion_passengers: string[]
 	phase: number
-	pslc: number
 	type_of: string
 	associated_to: string
 }
@@ -24,6 +24,7 @@ export interface FlightInstance
 	extends Model<FlightAttributes, FlightCreationAttributes> {
 	id: number
 	launchtime: Date
+	arrivaltime: Date
 	to: string
 	from: string
 	price_cost: number
@@ -33,7 +34,6 @@ export interface FlightInstance
 	master_passenger: number
 	companion_passengers: string[]
 	phase: number
-	pslc: number
 	type_of: string
 	associated_to: string
 }
@@ -48,6 +48,10 @@ const Flights = (sequelize: Sequelize) => {
 				autoIncrement: true,
 			},
 			launchtime: {
+				type: DataTypes.DATE,
+				allowNull: false,
+			},
+			arrivaltime: {
 				type: DataTypes.DATE,
 				allowNull: false,
 			},
@@ -89,9 +93,6 @@ const Flights = (sequelize: Sequelize) => {
 			phase: {
 				type: DataTypes.INTEGER,
 				allowNull: false,
-			},
-			pslc: {
-				type: DataTypes.INTEGER,
 			},
 			type_of: {
 				type: DataTypes.STRING,
