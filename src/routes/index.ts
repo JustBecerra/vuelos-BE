@@ -89,6 +89,9 @@ router.delete("/airship/:id", deleteAirship)
 //email
 router.post("/email", sendEmailController)
 
+//file
+
+
 //images
 router.get("/images/:id", getImages)
 router.delete("/image/:id", deleteImage)
