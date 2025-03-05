@@ -3,13 +3,13 @@ import { sendEmail } from "../services/emailService"
 
 async function sendEmailController(req: Request, res: Response) {
 	try {
-		const { to, subject, text } = req.body
+		const { to, subject, text, contract } = req.body
 
-		if (!to || !subject || !text) {
+		if (!to || !subject || !text || !contract) {
 			res.status(400).json({ message: "Missing required email fields" })
 		}
 
-		await sendEmail({ to, subject, text })
+		await sendEmail({ to, subject, text, contract })
 
 		res.status(200).json({ message: "Email sent successfully" })
 	} catch (error) {
