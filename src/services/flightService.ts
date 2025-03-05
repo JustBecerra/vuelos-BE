@@ -4,6 +4,7 @@ const { Flights, Schedulers, Airships, ClientFlights, Clients } = db
 interface FlightInput {
 	id: number
 	launchtime: Date
+	arrivaltime: Date
 	to: string
 	from: string
 	price_cost: number
@@ -28,6 +29,7 @@ const postFlightService = async (flight: FlightInput) => {
 	try {
 		const {
 			launchtime,
+			arrivaltime,
 			to,
 			from,
 			createdby,
@@ -58,6 +60,7 @@ const postFlightService = async (flight: FlightInput) => {
 		if (masterPassenger) {
 			const newFlight = await Flights.create({
 				launchtime,
+				arrivaltime: arrivaltime || new Date(launchtime).setHours(3),
 				to,
 				from,
 				price_cost: 0,
@@ -67,7 +70,6 @@ const postFlightService = async (flight: FlightInput) => {
 				master_passenger: masterPassenger,
 				companion_passengers: [],
 				phase: 3,
-				pslc: 0,
 				type_of: type_of || "initial",
 				associated_to: associated_to || "",
 			})
@@ -103,6 +105,7 @@ const putFlightService = async (flight: FlightInput) => {
 	const {
 		id,
 		launchtime,
+		arrivaltime,
 		to,
 		from,
 		price_cost,
@@ -139,6 +142,8 @@ const putFlightService = async (flight: FlightInput) => {
 			const flightToModify = await Flights.update(
 				{
 					launchtime: launchtime || oldFlight.dataValues.launchtime,
+					arrivaltime:
+						arrivaltime || oldFlight.dataValues.arrivaltime,
 					to: to || oldFlight.dataValues.to,
 					from: from || oldFlight.dataValues.from,
 					price_cost: price_cost || oldFlight.dataValues.price_cost,
@@ -153,7 +158,6 @@ const putFlightService = async (flight: FlightInput) => {
 						parsedCompanionPassengers ||
 						oldFlight.dataValues.companion_passengers,
 					phase: oldFlight.dataValues.phase,
-					pslc: oldFlight.dataValues.pslc,
 					type_of: type_of || oldFlight.dataValues.type_of,
 					associated_to:
 						associated_to || oldFlight.dataValues.associated_to,
