@@ -1,5 +1,6 @@
 import nodemailer from "nodemailer"
 import db from "../config/dbConfig"
+import path from "path"
 const { Clients } = db
 
 const transporter = nodemailer.createTransport({
@@ -22,6 +23,11 @@ async function sendEmail({
 	contract: boolean
 }) {
 	try {
+		const attachmentPath = path.resolve(
+			__dirname,
+			"../files/pruebatecnica_php.pdf"
+		)
+
 		const passengerEmailAddress = await Clients.findOne({
 			where: {
 				fullname: to,
@@ -36,8 +42,8 @@ async function sendEmail({
 			attachments: contract
 				? [
 						{
-							filename: "your-file.pdf",
-							path: "/path/to/your/file.pdf",
+							filename: "pruebatecnica_php.pdf",
+							path: attachmentPath,
 							contentType: "application/pdf",
 						},
 				  ]
