@@ -18,5 +18,17 @@ const postFileService = async (contractFile: Express.Multer.File) => {
     }
   };
   
+  const getFileService = async () => {
+		try {
+			const files = await Files.findAll()
 
-export {postFileService}
+			if (!files) throw new Error("There are no files available")
+
+			return files
+		} catch (error) {
+			console.error("Error returning file:", error)
+			return false
+		}
+  }
+
+  export { postFileService, getFileService }
