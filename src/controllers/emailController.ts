@@ -9,7 +9,10 @@ async function sendEmailController(req: Request, res: Response) {
 			res.status(400).json({ message: "Missing required email fields" })
 		}
 
-		await sendEmail({ to, subject, text, contract })
+		const email = await sendEmail({ to, subject, text, contract })
+		if (email === "contract not found") {
+			res.status(404).json({ message: email })
+		}
 
 		res.status(200).json({ message: "Email sent successfully" })
 	} catch (error) {
