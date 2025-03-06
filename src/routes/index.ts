@@ -38,6 +38,7 @@ import {
 	getPilots,
 	postPilot,
 } from "../controllers/pilotController"
+import { postFile } from "../controllers/fileController"
 const router: Router = express.Router()
 
 //flights
@@ -90,7 +91,7 @@ router.delete("/airship/:id", deleteAirship)
 router.post("/email", sendEmailController)
 
 //file
-
+router.post("/file", upload.single("contract"), postFile)
 
 //images
 router.get("/images/:id", getImages)
