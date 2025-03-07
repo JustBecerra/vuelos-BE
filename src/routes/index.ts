@@ -100,7 +100,7 @@ router.delete("/image/:id", deleteImage)
 
 //pilots
 router.get("/pilots", getPilots)
-router.post("/pilot", postPilot)
+router.put("/pilot", postPilot)
 router.delete("/pilot/:id", deletePilot)
 
 export default router
