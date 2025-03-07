@@ -6,7 +6,7 @@ export interface FlightCreationAttributes
 export interface PilotAttributes {
 	id: FlightCreationAttributes
 	fullname: string
-	phonenumber: number
+	phonenumber: string
 	weight: string
 	email: string
 	type: string

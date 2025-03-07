@@ -37,6 +37,7 @@ import {
 	deletePilot,
 	getPilots,
 	postPilot,
+	putPilot,
 } from "../controllers/pilotController"
 import { getFile, postFile } from "../controllers/fileController"
 const router: Router = express.Router()
@@ -101,6 +102,7 @@ router.delete("/image/:id", deleteImage)
 //pilots
 router.get("/pilots", getPilots)
 router.post("/pilot", postPilot)
+router.put("/pilot", putPilot)
 router.delete("/pilot/:id", deletePilot)
 
 export default router
