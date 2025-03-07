@@ -2,6 +2,7 @@ import {
 	deletePilotService,
 	getPilotsService,
 	postPilotService,
+	putPilotService,
 } from "../services/pilotService"
 import { Request, Response } from "express"
 
@@ -25,6 +26,20 @@ const postPilot = async (req: Request, res: Response): Promise<void> => {
 	}
 }
 
+const putPilot = async (req: Request, res: Response): Promise<void> => {
+	try {
+		const pilot = await putPilotService(req.body)
+
+		if (pilot === 0) {
+			res.status(400).json({ message: "Pilot doesnt exist" })
+		} else {
+			res.status(200).json(pilot)
+		}
+	} catch (err) {
+		res.status(500).json({ message: "could not edit pilot", err })
+	}
+}
+
 const deletePilot = async (req: Request, res: Response): Promise<void> => {
 	try {
 		const { id } = req.params
@@ -37,4 +52,4 @@ const deletePilot = async (req: Request, res: Response): Promise<void> => {
 	}
 }
 
-export { getPilots, postPilot, deletePilot }
+export { getPilots, postPilot, deletePilot, putPilot }
