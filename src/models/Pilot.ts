@@ -29,10 +29,10 @@ const Pilot = (sequelize: Sequelize) => {
 				allowNull: false,
 			},
 			phonenumber: {
-				type: DataTypes.INTEGER,
+				type: DataTypes.STRING(50),
 			},
 			weight: {
-				type: DataTypes.INTEGER,
+				type: DataTypes.STRING(50),
 			},
 			email: {
 				type: DataTypes.STRING(100),
