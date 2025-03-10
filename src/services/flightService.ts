@@ -1,6 +1,6 @@
 import db from "../config/dbConfig"
 import { Op } from "sequelize"
-const { Flights, Schedulers, Airships, ClientFlights, Clients } = db
+const { Flights, Schedulers, Airships, ClientFlights, Clients, Pilots } = db
 interface FlightInput {
 	id: number
 	launchtime: Date
@@ -335,11 +335,12 @@ const patchAssignPilotService = async (data: pilotAssignationProps) => {
 		const { pilot_id, flight_id } = data
 
 		const flight = await Flights.findByPk(flight_id)
-		const existingPilot = await Flights.findOne({
+		const existingPilot = await Pilots.findOne({
 			where: {
-				pilot_id,
+				id: pilot_id,
 			},
 		})
+
 		if (!existingPilot) return 0
 		if (!flight) return 0
 
