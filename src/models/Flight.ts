@@ -15,6 +15,7 @@ export interface FlightAttributes {
 	phase: number
 	type_of: string
 	associated_to: string
+	pilot_id: number
 }
 
 export interface FlightCreationAttributes
@@ -36,6 +37,7 @@ export interface FlightInstance
 	phase: number
 	type_of: string
 	associated_to: string
+	pilot_id: number
 }
 
 const Flights = (sequelize: Sequelize) => {
@@ -99,6 +101,13 @@ const Flights = (sequelize: Sequelize) => {
 			},
 			associated_to: {
 				type: DataTypes.STRING,
+			},
+			pilot_id: {
+				type: DataTypes.INTEGER,
+				references: {
+					model: "pilot",
+					key: "id",
+				},
 			},
 		},
 		{

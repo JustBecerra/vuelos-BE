@@ -72,6 +72,7 @@ const postFlightService = async (flight: FlightInput) => {
 				phase: 3,
 				type_of: type_of || "initial",
 				associated_to: associated_to || "",
+				pilot_id: 0,
 			})
 
 			if (!newFlight) return "Flight creation went wrong"
