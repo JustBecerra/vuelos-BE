@@ -185,7 +185,7 @@ const putFlightService = async (flight: FlightInput) => {
 	}
 }
 
-const getAlteredValues = async (createdby: string, id: number) => {
+const getAlteredValues = async (createdby: number, id: number) => {
 	const schedulerFound = (await Schedulers.findByPk(createdby))?.dataValues
 		.username
 	const airshipName = (await Airships.findByPk(id))?.dataValues.title
@@ -226,24 +226,30 @@ const getFlightsService = async () => {
 		const filteredDataPromises = flights.map(async (flight: any) => {
 			const {
 				launchtime,
+				arrivaltime,
 				createdAt,
 				updatedAt,
 				createdby,
 				airship_id,
 				master_passenger,
 				companion_passengers,
+				pilot_id,
 				...rest
 			} = flight.toJSON()
 
 			const masterPassenger = await Clients.findByPk(master_passenger)
-
+			const pilotName = await Pilots.findByPk(pilot_id)
 			return getAlteredValues(createdby, airship_id).then(
 				(alteredData) => ({
 					launchtime: new Date(launchtime).toISOString().slice(0, 16),
+					arrivaltime: new Date(arrivaltime)
+						.toISOString()
+						.slice(0, 16),
 					createdAt: new Date(createdAt).toISOString().slice(0, 16),
 					updatedAt: new Date(updatedAt).toISOString().slice(0, 16),
 					createdby: alteredData?.schedulerFound,
 					airship_name: alteredData?.airshipName,
+					pilot_id: pilotName?.dataValues.fullname,
 					master_passenger:
 						masterPassenger && masterPassenger?.dataValues.fullname,
 					...rest,
@@ -265,7 +271,28 @@ const getFlightByIdService = async (id: number) => {
 
 		if (!flightById) throw new Error("There is no flight with that ID")
 
-		return flightById
+		const {
+			launchtime,
+			arrivaltime,
+			createdby,
+			airship_id,
+			master_passenger,
+			companion_passengers,
+			pilot_id,
+			...rest
+		} = flightById.toJSON()
+
+		const masterPassenger = await Clients.findByPk(master_passenger)
+		const pilotName = await Pilots.findByPk(pilot_id)
+		return getAlteredValues(createdby, airship_id).then((alteredData) => ({
+			launchtime: new Date(launchtime).toISOString().slice(0, 16),
+			createdby: alteredData?.schedulerFound,
+			airship_name: alteredData?.airshipName,
+			pilot_id: pilotName?.dataValues.fullname,
+			master_passenger:
+				masterPassenger && masterPassenger?.dataValues.fullname,
+			...rest,
+		}))
 	} catch (err) {
 		console.error(err)
 		return null
