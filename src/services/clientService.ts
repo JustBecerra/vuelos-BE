@@ -100,6 +100,7 @@ const putClientService = async (client: ClientInterface) => {
 		nationality,
 		weight,
 		date_of_birth,
+		title,
 	} = client
 	try {
 		const oldClient = await Clients.findByPk(id)
@@ -120,6 +121,7 @@ const putClientService = async (client: ClientInterface) => {
 					date_of_birth: date_of_birth
 						? date_of_birth
 						: oldClient.date_of_birth,
+					title: title ? title : oldClient.title,
 				},
 				{
 					where: {
