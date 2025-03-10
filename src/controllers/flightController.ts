@@ -14,7 +14,7 @@ import {
 const postFlight = async (req: Request, res: Response): Promise<void> => {
 	try {
 		const flight = await postFlightService(req.body)
-		if (typeof flight === "string") res.status(400).json({ error: flight })
+		if (typeof flight === "string") res.status(400)
 		else res.status(200).json(flight)
 	} catch (error) {
 		console.error("error adding new flight", error)
