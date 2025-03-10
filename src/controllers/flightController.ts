@@ -8,6 +8,7 @@ import {
 	deleteFlightService,
 	putCompletePhaseService,
 	putConfirmQuoteService,
+	patchAssignPilotService,
 } from "../services/flightService"
 
 const postFlight = async (req: Request, res: Response): Promise<void> => {
@@ -129,6 +130,29 @@ const putConfirmQuote = async (req: Request, res: Response): Promise<void> => {
 	}
 }
 
+const patchAssignPilotController = async (
+	req: Request,
+	res: Response
+): Promise<void> => {
+	try {
+		const confirmation = await patchAssignPilotService(req.body)
+
+		if (confirmation === 0) res.status(400)
+
+		res.status(200).json(confirmation)
+	} catch (error) {
+		console.error("error assigning pilot controller", error)
+		res.status(500).json({
+			message: "error assigning pilot controller",
+			error: {
+				name: (error as Error).name,
+				message: (error as Error).message,
+				stack: (error as Error).stack,
+			},
+		})
+	}
+}
+
 const getFlightById = async (req: Request, res: Response): Promise<void> => {
 	try {
 		const flightID = parseInt(req.params.id)
@@ -183,4 +207,5 @@ export {
 	deleteFlight,
 	putCompletePhase,
 	putConfirmQuote,
+	patchAssignPilotController,
 }
