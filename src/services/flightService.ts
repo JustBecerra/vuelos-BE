@@ -25,6 +25,11 @@ interface confirmationProps {
 	flight_id: number
 }
 
+interface pilotAssignationProps {
+	flight_id: number
+	pilot_id: number
+}
+
 const postFlightService = async (flight: FlightInput) => {
 	try {
 		const {
@@ -325,6 +330,38 @@ const putConfirmQuoteService = async (data: confirmationProps) => {
 	}
 }
 
+const patchAssignPilotService = async (data: pilotAssignationProps) => {
+	try {
+		const { pilot_id, flight_id } = data
+
+		const flight = await Flights.findByPk(flight_id)
+		const existingPilot = await Flights.findOne({
+			where: {
+				pilot_id,
+			},
+		})
+		if (!existingPilot) return 0
+		if (!flight) return 0
+
+		const updatedFlight = await Flights.update(
+			{
+				pilot_id,
+			},
+			{
+				where: {
+					id: flight_id,
+				},
+			}
+		)
+		if (updatedFlight[0] < 1) return 0
+
+		return updatedFlight
+	} catch (err) {
+		console.error(err)
+		return err
+	}
+}
+
 export {
 	postFlightService,
 	getFlightsService,
@@ -334,4 +371,5 @@ export {
 	deleteFlightService,
 	putCompletePhaseService,
 	putConfirmQuoteService,
+	patchAssignPilotService,
 }
