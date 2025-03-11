@@ -70,7 +70,7 @@ const postFlightService = async (flight: FlightInput) => {
 				from,
 				price_cost: 0,
 				price_revenue: 0,
-				airship_id: 32,
+				airship_id: 43,
 				createdby: scheduler_id,
 				master_passenger: masterPassenger,
 				companion_passengers: [],
