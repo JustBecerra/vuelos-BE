@@ -289,6 +289,7 @@ const getFlightByIdService = async (id: number) => {
 			createdby: alteredData?.schedulerFound,
 			airship_name: alteredData?.airshipName,
 			pilot_id: pilotName?.dataValues.fullname,
+			companion_passengers: companion_passengers || [],
 			master_passenger:
 				masterPassenger && masterPassenger?.dataValues.fullname,
 			...rest,
