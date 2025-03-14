@@ -16,6 +16,8 @@ interface FlightInput {
 	phase: number
 	type_of: string
 	associated_to: string
+	latitude: string
+	longitude: string
 }
 
 interface confirmationProps {
@@ -41,6 +43,8 @@ const postFlightService = async (flight: FlightInput) => {
 			master_passenger,
 			associated_to,
 			type_of,
+			latitude,
+			longitude,
 		} = flight
 
 		const scheduler = await Schedulers.findOne({
@@ -78,6 +82,8 @@ const postFlightService = async (flight: FlightInput) => {
 				type_of: type_of || "initial",
 				associated_to: associated_to || "",
 				pilot_id: 0,
+				longitude: longitude || "",
+				latitude: latitude || "",
 			})
 
 			if (!newFlight) return "Flight creation went wrong"
@@ -121,6 +127,8 @@ const putFlightService = async (flight: FlightInput) => {
 		companion_passengers,
 		type_of,
 		associated_to,
+		longitude,
+		latitude,
 	} = flight
 	try {
 		const oldFlight = await Flights.findOne({
@@ -167,6 +175,8 @@ const putFlightService = async (flight: FlightInput) => {
 					type_of: type_of || oldFlight.dataValues.type_of,
 					associated_to:
 						associated_to || oldFlight.dataValues.associated_to,
+					longitude: longitude || oldFlight.dataValues.longitude,
+					latitude: latitude || oldFlight.dataValues.latitude,
 				},
 				{
 					where: {
@@ -279,6 +289,8 @@ const getFlightByIdService = async (id: number) => {
 			master_passenger,
 			companion_passengers,
 			pilot_id,
+			latitude,
+			longitude,
 			...rest
 		} = flightById.toJSON()
 
@@ -292,6 +304,8 @@ const getFlightByIdService = async (id: number) => {
 			companion_passengers: companion_passengers || [],
 			master_passenger:
 				masterPassenger && masterPassenger?.dataValues.fullname,
+			longitude: longitude,
+			latitude: latitude,
 			...rest,
 		}))
 	} catch (err) {
