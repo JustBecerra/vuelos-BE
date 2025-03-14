@@ -16,6 +16,8 @@ export interface FlightAttributes {
 	type_of: string
 	associated_to: string
 	pilot_id: number
+	latitude: string
+	longitude: string
 }
 
 export interface FlightCreationAttributes
@@ -38,6 +40,8 @@ export interface FlightInstance
 	type_of: string
 	associated_to: string
 	pilot_id: number
+	latitude: string
+	longitude: string
 }
 
 const Flights = (sequelize: Sequelize) => {
@@ -108,6 +112,12 @@ const Flights = (sequelize: Sequelize) => {
 					model: "pilot",
 					key: "id",
 				},
+			},
+			longitude: {
+				type: DataTypes.STRING,
+			},
+			latitude: {
+				type: DataTypes.STRING,
 			},
 		},
 		{
