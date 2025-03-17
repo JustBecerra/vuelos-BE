@@ -3,13 +3,19 @@ import { sendEmail } from "../services/emailService"
 
 async function sendEmailController(req: Request, res: Response) {
 	try {
-		const { to, subject, text, contract } = req.body
+		const { to, subject, url, type_of_email, contract } = req.body
 
-		if (!to || !subject || !text || !contract) {
+		if (!to || !subject || !url || !type_of_email || !contract) {
 			res.status(400)
 		}
 
-		const email = await sendEmail({ to, subject, text, contract })
+		const email = await sendEmail({
+			to,
+			subject,
+			url,
+			type_of_email,
+			contract,
+		})
 		if (email === "contract not found") {
 			res.status(404)
 		}
