@@ -60,26 +60,28 @@ async function sendEmail({
 							<p>Thank you for choosing Tango Jets.</p>`
 				}
 				case "invoice": {
-					return `<p>We&apos;re pleased to inform you that your flight has been successfully pre-scheduled. Below are the details:</p>
+					return `<p>We&apos;re pleased to inform you that your flight has been successfully scheduled. Below are the details:</p>
 
-							<p>To proceed with your booking, please select your preferred airship from the available options following the link below</p>
+    						<p>Please ensure you arrive at the airport at least one hour before departure for check-in.</p>
 
-							<p>Please make your selection as soon as possible to ensure availability.</p>
+    						<p>To confirm your booking, please complete the payment using the link below:</p>
 
-							<p>If you have any questions or need assistance, feel free to contact us.</p>
+    						<p>If you have any questions or need assistance, feel free to contact us.</p>
 
-							<p>Thank you for choosing Tango Jets.</p>`
+    						<p>Thank you for choosing Tango Jets.</p>`
 				}
 				case "contract": {
-					return `<p>We&apos;re pleased to inform you that your flight has been successfully pre-scheduled. Below are the details:</p>
+					return `<p>I hope this email finds you well.</p>
 
-							<p>To proceed with your booking, please select your preferred airship from the available options following the link below</p>
+							<p>Attached, you will find the contract for your upcoming flight with us. Please review the terms and conditions outlined in the document carefully.</p>
 
-							<p>Please make your selection as soon as possible to ensure availability.</p>
+							<p>To proceed with your booking, kindly sign the contract and return it to us at your earliest convenience. If you have any questions or require any clarification, feel free to reach out to us directly.</p>
 
-							<p>If you have any questions or need assistance, feel free to contact us.</p>
+							<p>We look forward to providing you with an exceptional flying experience. Should you need any assistance in preparing for your flight, don't hesitate to contact us.</p>
 
-							<p>Thank you for choosing Tango Jets.</p>`
+							<p>Thank you for choosing Tango Jets. We look forward to serving you.</p>
+
+							<p>Warm regards,</p>`
 				}
 				default:
 					""
