@@ -20,6 +20,7 @@ export interface FlightAttributes {
 	first_latitude: string
 	second_longitude: string
 	second_latitude: string
+	flight_time: string
 }
 
 export interface FlightCreationAttributes
@@ -46,6 +47,7 @@ export interface FlightInstance
 	first_latitude: string
 	second_longitude: string
 	second_latitude: string
+	flight_time: string
 }
 
 const Flights = (sequelize: Sequelize) => {
@@ -127,6 +129,9 @@ const Flights = (sequelize: Sequelize) => {
 				type: DataTypes.STRING,
 			},
 			second_latitude: {
+				type: DataTypes.STRING,
+			},
+			flight_time: {
 				type: DataTypes.STRING,
 			},
 		},
