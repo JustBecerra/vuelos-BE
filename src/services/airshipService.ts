@@ -138,35 +138,37 @@ const putAirshipService = async (
 			return firstOccurrenceIndex === index
 		})
 
-		for (const file of filteredImages) {
-			try {
-				const updatedGeneric = await Images.update(
-					{
-						image: file.buffer,
-						original_name: file.originalname,
-					},
-					{
-						where: {
-							airship_id: id,
-							typeof: "Generic",
-						},
-					}
-				)
+		const oldImages = await Images.findAll({
+			where: {
+				airship_id: id,
+				typeof: "Generic",
+			},
+		})
 
-				if (updatedGeneric[0] === 0) {
-					await Images.create({
-						image: file.buffer,
-						airship_id: id,
-						typeof: "Portrait",
-						original_name: file.originalname,
-					})
-				}
-			} catch (error) {
-				console.error(
-					`Error uploading file ${file.originalname}:`,
-					error
-				)
-				continue
+		for (let i = 0; i < filteredImages.length; i++) {
+			const file = filteredImages[i]
+
+			if (i < oldImages.length) {
+				// Update existing image
+				await oldImages[i].update({
+					image: file.buffer,
+					original_name: file.originalname,
+				})
+			} else {
+				// Create new image if there are more new images than old ones
+				await Images.create({
+					image: file.buffer,
+					airship_id: id,
+					typeof: "Generic",
+					original_name: file.originalname,
+				})
+			}
+		}
+
+		if (oldImages.length > filteredImages.length) {
+			const imagesToDelete = oldImages.slice(filteredImages.length)
+			for (const image of imagesToDelete) {
+				await image.destroy()
 			}
 		}
 
