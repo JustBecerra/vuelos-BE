@@ -23,21 +23,13 @@ async function sendEmail({
 	subject,
 	url,
 	type_of_email,
-	contract,
 }: {
 	to: string
 	subject: string
 	url?: string
 	type_of_email: string
-	contract: boolean
 }) {
 	try {
-		const contractFile = await Files.findOne({
-			where: { original_name: "pruebatecnica_php.pdf" },
-		})
-
-		if (!contractFile) return "contract not found"
-
 		const passenger = await Clients.findOne({
 			where: {
 				fullname: to,
@@ -79,9 +71,7 @@ async function sendEmail({
 
 							<p>We look forward to providing you with an exceptional flying experience. Should you need any assistance in preparing for your flight, don't hesitate to contact us.</p>
 
-							<p>Thank you for choosing Tango Jets. We look forward to serving you.</p>
-
-							<p>Warm regards,</p>`
+							<p>Thank you for choosing Tango Jets. We look forward to serving you.</p>`
 				}
 				default:
 					""
@@ -91,6 +81,7 @@ async function sendEmail({
 		const buttonText = () => {
 			if (type_of_email === "quote") return "Go to quote"
 			else if (type_of_email === "invoice") return "Go to invoice"
+			else if (type_of_email === "contract") return "Go to contract"
 		}
 
 		const info = await transporter.sendMail({
@@ -124,19 +115,9 @@ async function sendEmail({
 	${TextDecider()}
 
 </div></td></tr><tr><td align="left" vertical-align="middle" style="font-size:0px;padding:10px 25px;word-break:break-word;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:separate;line-height:100%;"><tr><td align="center" bgcolor="#ffffff" role="presentation" style="border:none;border-radius:10px;cursor:auto;mso-padding-alt:10px 25px;background:#ffffff;" valign="middle">
-	${
-		type_of_email !== "contract" &&
-		`<a href=${url} style="display:inline-block;background:#464646;color:#ffffff;font-family:open Sans Helvetica, Arial, sans-serif;font-size:22px;font-weight:bold;line-height:120%;margin:0;text-decoration:none;text-transform:none;padding:10px 25px;mso-padding-alt:0px;border-radius:10px;opacity:#464646">${buttonText()}</a>`
-	}</td></tr></table></td></tr><tr><td align="left" style="font-size:0px;padding:10px 25px;padding-right:25px;padding-left:25px;word-break:break-word;"><div style="font-family:open Sans Helvetica, Arial, sans-serif;font-size:15px;line-height:1;text-align:left;color:#ffffff;">Thanks,<br>Tango Jets Team</div></td></tr></tbody></table></div><!--[if mso | IE]></td></tr></table><![endif]--></td></tr></tbody></table></div><!--[if mso | IE]></td></tr></table><![endif]--></div></body></html>`,
-			attachments: contract
-				? [
-						{
-							filename: contractFile?.dataValues.original_name,
-							content: contractFile?.dataValues.source,
-							contentType: "application/pdf",
-						},
-				  ]
-				: undefined,
+
+		<a href=${url} style="display:inline-block;background:#464646;color:#ffffff;font-family:open Sans Helvetica, Arial, sans-serif;font-size:22px;font-weight:bold;line-height:120%;margin:0;text-decoration:none;text-transform:none;padding:10px 25px;mso-padding-alt:0px;border-radius:10px;opacity:#464646">${buttonText()}</a>
+	</td></tr></table></td></tr><tr><td align="left" style="font-size:0px;padding:10px 25px;padding-right:25px;padding-left:25px;word-break:break-word;"><div style="font-family:open Sans Helvetica, Arial, sans-serif;font-size:15px;line-height:1;text-align:left;color:#ffffff;">Thanks,<br>Tango Jets Team</div></td></tr></tbody></table></div><!--[if mso | IE]></td></tr></table><![endif]--></td></tr></tbody></table></div><!--[if mso | IE]></td></tr></table><![endif]--></div></body></html>`,
 		})
 
 		return info
