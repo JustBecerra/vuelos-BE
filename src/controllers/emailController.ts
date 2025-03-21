@@ -3,9 +3,9 @@ import { sendEmail } from "../services/emailService"
 
 async function sendEmailController(req: Request, res: Response) {
 	try {
-		const { to, subject, url, type_of_email, contract } = req.body
+		const { to, subject, url, type_of_email } = req.body
 
-		if (!to || !subject || !url || !type_of_email || !contract) {
+		if (!to || !subject || !url || !type_of_email) {
 			res.status(400)
 		}
 
@@ -14,11 +14,7 @@ async function sendEmailController(req: Request, res: Response) {
 			subject,
 			url,
 			type_of_email,
-			contract,
 		})
-		if (email === "contract not found") {
-			res.status(404)
-		}
 
 		res.status(200).json({ message: "Email sent successfully" })
 	} catch (error) {
