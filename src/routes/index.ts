@@ -94,7 +94,7 @@ router.delete("/airship/:id", deleteAirship)
 router.post("/email", sendEmailController)
 
 //file
-router.post("/file", upload.single("contract"), postFile)
+router.post("/file/:id", upload.single("contract"), postFile)
 router.get("/file", getFile)
 
 //images
