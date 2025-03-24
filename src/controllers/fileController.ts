@@ -4,10 +4,9 @@ import { getFileService, postFileService } from "../services/fileService"
 const postFile = async (req: Request, res: Response): Promise<void> => {
 	try {
 		const contractFile = req.file
+		const flightID = parseInt(req.params.id)
 
-		const filesSuccess = await postFileService(
-			contractFile as Express.Multer.File
-		)
+		const filesSuccess = await postFileService({ contractFile, flightID })
 		if (!filesSuccess) res.status(400).json({ error: filesSuccess })
 		else res.status(200).json(filesSuccess)
 	} catch (error) {
