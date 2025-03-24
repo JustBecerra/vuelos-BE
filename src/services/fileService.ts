@@ -1,12 +1,9 @@
 import db from "../config/dbConfig"
 const { Files } = db
-const postFileService = async ({
-	contractFile,
-	flightID,
-}: {
-	contractFile: Express.Multer.File | undefined
+const postFileService = async (
+	contractFile: Express.Multer.File | undefined,
 	flightID: number
-}) => {
+) => {
 	try {
 		if (contractFile) {
 			await Files.create({
