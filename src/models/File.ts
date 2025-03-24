@@ -6,6 +6,7 @@ export interface FileAttributes {
 	id: number
 	original_name: string
 	source: Buffer
+	flight_id: number
 }
 
 const file = (sequelize: Sequelize) => {
@@ -22,6 +23,10 @@ const file = (sequelize: Sequelize) => {
 			},
 			source: {
 				type: DataTypes.BLOB("long"),
+				allowNull: false,
+			},
+			flight_id: {
+				type: DataTypes.INTEGER,
 				allowNull: false,
 			},
 		},
