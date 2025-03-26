@@ -20,6 +20,7 @@ interface FlightInput {
 	first_latitude: string
 	second_longitude: string
 	second_latitude: string
+	flight_time: string
 }
 
 interface confirmationProps {
@@ -49,6 +50,7 @@ const postFlightService = async (flight: FlightInput) => {
 			first_latitude,
 			second_longitude,
 			second_latitude,
+			flight_time,
 		} = flight
 
 		const scheduler = await Schedulers.findOne({
@@ -90,6 +92,7 @@ const postFlightService = async (flight: FlightInput) => {
 				first_latitude: first_latitude || "",
 				second_longitude: second_longitude || "",
 				second_latitude: second_latitude || "",
+				flight_time: flight_time || "",
 			})
 
 			if (!newFlight) return "Flight creation went wrong"
@@ -137,6 +140,7 @@ const putFlightService = async (flight: FlightInput) => {
 		first_latitude,
 		second_longitude,
 		second_latitude,
+		flight_time,
 	} = flight
 	try {
 		const oldFlight = await Flights.findOne({
@@ -192,6 +196,8 @@ const putFlightService = async (flight: FlightInput) => {
 						oldFlight.dataValues.second_longitude,
 					second_latitude:
 						second_latitude || oldFlight.dataValues.second_latitude,
+					flight_time:
+						flight_time || oldFlight.dataValues.flight_time,
 				},
 				{
 					where: {
