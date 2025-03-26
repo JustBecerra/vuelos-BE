@@ -91,22 +91,23 @@ const postAirshipService = async (
 			}
 		}
 
-		for (const file of filteredImages) {
-			try {
-				await Images.create({
-					image: file.buffer,
-					airship_id: airshipID,
-					typeof: "Generic",
-					original_name: file.originalname,
-				})
-			} catch (error) {
-				console.error(
-					`Error uploading file ${file.originalname}:`,
-					error
-				)
-				continue
-			}
-		}
+		await Promise.all(
+			filteredImages.map((file, i) => {
+				try {
+					return Images.create({
+						image: file.buffer,
+						airship_id: airshipID,
+						typeof: "Generic",
+						original_name: file.originalname,
+					})
+				} catch (error) {
+					console.error(
+						`Error uploading file ${file.originalname}:`,
+						error
+					)
+				}
+			})
+		)
 
 		return newAirship
 	} catch (err) {
