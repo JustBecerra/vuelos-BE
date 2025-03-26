@@ -145,25 +145,23 @@ const putAirshipService = async (
 			},
 		})
 
-		for (let i = 0; i < filteredImages.length; i++) {
-			const file = filteredImages[i]
-
-			if (i < oldImages.length) {
-				// Update existing image
-				await oldImages[i].update({
-					image: file.buffer,
-					original_name: file.originalname,
-				})
-			} else {
-				// Create new image if there are more new images than old ones
-				await Images.create({
-					image: file.buffer,
-					airship_id: id,
-					typeof: "Generic",
-					original_name: file.originalname,
-				})
-			}
-		}
+		await Promise.all(
+			filteredImages.map((file, i) => {
+				if (i < oldImages.length) {
+					return oldImages[i].update({
+						image: file.buffer,
+						original_name: file.originalname,
+					})
+				} else {
+					return Images.create({
+						image: file.buffer,
+						airship_id: id,
+						typeof: "Generic",
+						original_name: file.originalname,
+					})
+				}
+			})
+		)
 
 		if (oldImages.length > filteredImages.length) {
 			const imagesToDelete = oldImages.slice(filteredImages.length)

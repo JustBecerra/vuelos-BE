@@ -4,6 +4,7 @@ import { corsConfig } from "../middleware/cors"
 import routes from "../routes/index"
 import cookieParser from "cookie-parser"
 const server = express()
+server.set("trust proxy", 1)
 server.use(corsConfig)
 server.use(helmetMiddleware)
 server.use(cookieParser())
